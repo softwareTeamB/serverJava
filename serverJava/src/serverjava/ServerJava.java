@@ -5,6 +5,11 @@
  */
 package serverjava;
 
+import invullenMarktlijst.insertFuncties;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  *
  * @author Jaros
@@ -17,8 +22,13 @@ public class ServerJava {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        
-        // TODO code application logic here
+        insertFuncties instersFuncies = new insertFuncties();
+        try {
+            instersFuncies.invullenCoinsBittrex();
+            // TODO code application logic here
+        } catch (SQLException ex) {
+            Logger.getLogger(ServerJava.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
 }
