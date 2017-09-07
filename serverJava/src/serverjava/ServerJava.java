@@ -22,9 +22,11 @@ public class ServerJava {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        insertFuncties instersFuncies = new insertFuncties();
+        insertFuncties InstersFuncies = new insertFuncties();
+        
+        
         try {
-            instersFuncies.invullenCoinsBittrex();
+            InstersFuncies.invullenCoinsBittrex();
             // TODO code application logic here
         } catch (SQLException ex) {
             Logger.getLogger(ServerJava.class.getName()).log(Level.SEVERE, null, ex);
