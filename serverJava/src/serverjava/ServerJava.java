@@ -21,12 +21,15 @@ public class ServerJava {
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         insertFuncties InstersFuncies = new insertFuncties();
-        
+        String markt = "poloniex";//naam van de makrt in de database
+        String url = "https://poloniex.com/public?command=returnTicker"; //website voor controle informatie
+        String symbool = "_"; //symbool voor de naam van de markt
         
         try {
             InstersFuncies.invullenCoinsBittrex();
+            InstersFuncies.invullenCoinsPolo(markt, url, symbool);
             // TODO code application logic here
         } catch (SQLException ex) {
             Logger.getLogger(ServerJava.class.getName()).log(Level.SEVERE, null, ex);
