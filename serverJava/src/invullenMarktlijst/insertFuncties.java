@@ -29,7 +29,7 @@ public class insertFuncties {
         int bittrex = 1;//standaard code bittrex in db
 
         //ophalen van informatie bittrex api
-        JSONObject objectBittrex = new JSONObject(http.getHTTP("https://bittrex.com/api/v1.1/public/getmarkets"));
+        JSONObject objectBittrex = new JSONObject(http.GetHttp("https://bittrex.com/api/v1.1/public/getmarkets"));
         JSONArray coinLijsten = objectBittrex.getJSONArray("result");
 
         for (int i = 0; i < coinLijsten.length(); i++) { //loopen door aantal gevonden markten
@@ -96,71 +96,6 @@ public class insertFuncties {
 
             String sql = "INSERT INTO marktlijsten (naamMarkt, idMarktnaam, idHandelsplaats) values ('" + marktnaam + "', '" + idMarkt + "', 1)";
             mysql.mysqlExecute(sql);
-        }
-
-    }
-
-    public void invullenCoinsPolo(String markt, String url, String symbool) throws Exception {//autamatiseren van verschillende markten door input is mogenlijk
-
-        int idMarktNaam = 2;
-        int IdHndelsplaats = 0;
-
-        ResultSet rs3 = mysql.mysqlSelect("select idHandelsplaats from handelsplaats where handelsplaatsNaam = '" + markt + "'");
-        if (rs3.next()) {
-            IdHndelsplaats = rs3.getInt("idHandelsplaats");
-            System.out.println("hij denkt " + IdHndelsplaats);
-        }
-
-        
-        //System.out.println(http.getHttpObject("https://api.coinmarketcap.com/v1/ticker/"));
-        JSONArray coinLijsten = new JSONArray(http.getHttpObject("https://api.coinmarketcap.com/v1/ticker/"));
-        JSONObject marktdata = new JSONObject(http.getHTTP(url));
-        //System.out.println(coinLijsten.length());
-
-        for (int i = 0; i < 10; i++) {//aantal hoofd coins
-            JSONObject autoCountObject = coinLijsten.getJSONObject(i);
-            String begin = autoCountObject.getString("symbol");
-            for (int j = 0; j < coinLijsten.length(); j++) {//aantal mogelijke markten
-                System.out.println("keer " + i + "....ronde " + j);
-                if (i != j) {
-
-                    JSONObject dataStroom = coinLijsten.getJSONObject(j);
-
-                    String dbNaam = begin + "-" + dataStroom.getString("symbol");//maken naam voor in de database
-                    String naamMarkt = begin + symbool + dataStroom.getString("symbol");//maken naam voor de markt
-
-                    if (marktdata.has(naamMarkt)) {//aantal bestaande markten
-                        int bestaat = mysql.mysqlCount("SELECT COUNT(*) AS total FROM marktnaam WHERE marktnaamDb = " + '"' + dbNaam + '"');//kijken of makrt al bestaat in marktnaam
-
-                        if (bestaat < 1) {//als nog niet bestaat maak dan aan
-
-                            String marktCurrency = dataStroom.getString("symbol");
-
-                            String sqlTwee = ("INSERT INTO marktnaam(MarktnaamDb, baseCoin, MarktCurrency) values ('" + dbNaam + "', '" + begin + "' ,'" + marktCurrency + "')");
-                            mysql.mysqlExecute(sqlTwee);
-                        }
-
-                        ResultSet rs = mysql.mysqlSelect("SELECT idMarktNaam from marktNaam where marktnaamDb = '" + dbNaam + "'");//ophalen id in marktnaam 
-                        if (rs.next()) {
-                            idMarktNaam = rs.getInt("idMarktNaam");
-                        }
-
-                        int bestaatLijsten = mysql.mysqlCount("SELECT COUNT(*) AS total FROM marktlijsten WHERE idMarktnaam = " + idMarktNaam
-                                + " and  idHandelsplaats = " + IdHndelsplaats + "");//controle of markt al bekend is bij marktlijsten
-
-                        if (bestaatLijsten < 1) {//invullen van martktlijsten
-                            System.out.println("inserted");
-
-                            String sql = "INSERT INTO marktlijsten (naamMarkt, idMarktnaam, idHandelsplaats) values ('" + naamMarkt + "', '" + idMarktNaam + "', '" + IdHndelsplaats + "')";
-                            //System.out.println(sql);
-                            mysql.mysqlExecute(sql);
-                        }
-                    }
-
-                }
-
-            }
-
         }
 
     }
