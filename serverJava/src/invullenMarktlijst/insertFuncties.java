@@ -26,7 +26,7 @@ public class insertFuncties {
 
     public void invullenCoinsBittrex() throws SQLException, Exception {
 
-        int bittrex = 1;//standaard code bittrex in db
+        int bittrex = 2;//standaard code bittrex in db
 
         //ophalen van informatie bittrex api
         JSONObject objectBittrex = new JSONObject(http.getHTTP("https://bittrex.com/api/v1.1/public/getmarkets"));
@@ -94,7 +94,7 @@ public class insertFuncties {
         while (rs.next()) {
             int idMarkt = rs.getInt("idMarktNaam");
 
-            String sql = "INSERT INTO marktlijsten (naamMarkt, idMarktnaam, idHandelsplaats) values ('" + marktnaam + "', '" + idMarkt + "', 1)";
+            String sql = "INSERT INTO marktlijsten (naamMarkt, idMarktnaam, idHandelsplaats) values ('" + marktnaam + "', " + idMarkt + ", 1)";
             mysql.mysqlExecute(sql);
         }
 
