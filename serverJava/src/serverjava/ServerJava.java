@@ -5,6 +5,7 @@
  */
 package serverjava;
 
+import invullenMarktlijst.BittrexMarktUpdate;
 import invullenMarktlijst.insertFuncties;
 import java.sql.SQLException;
 import java.util.logging.Level;
@@ -34,6 +35,8 @@ public class ServerJava {
         } catch (SQLException ex) {
             Logger.getLogger(ServerJava.class.getName()).log(Level.SEVERE, null, ex);
         }
+        //BittrexMarktUpdate bittrexMarktUpdate = new BittrexMarktUpdate("bittrex");
+        //bittrexMarktUpdate.marktUpdateLijsten();
     }
     
 }
