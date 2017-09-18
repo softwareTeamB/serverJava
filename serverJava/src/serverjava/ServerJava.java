@@ -6,6 +6,7 @@
 package serverjava;
 
 import invullenMarktlijst.BittrexMarktUpdate;
+import invullenMarktlijst.bittrexMarktdata;
 import invullenMarktlijst.insertFuncties;
 import java.sql.SQLException;
 import java.util.logging.Level;
@@ -29,8 +30,11 @@ public class ServerJava {
         String symbool = "_"; //symbool voor de naam van de markt
         
         try {
-            InstersFuncies.invullenCoinsBittrex();
-            InstersFuncies.invullenCoinsPolo(markt, url, symbool);
+            bittrexMarktdata bit = new bittrexMarktdata();
+            bit.bittrexMarktdataControler();
+            
+            //InstersFuncies.invullenCoinsBittrex();
+            //InstersFuncies.invullenCoinsPolo(markt, url, symbool);
             // TODO code application logic here
         } catch (SQLException ex) {
             Logger.getLogger(ServerJava.class.getName()).log(Level.SEVERE, null, ex);
