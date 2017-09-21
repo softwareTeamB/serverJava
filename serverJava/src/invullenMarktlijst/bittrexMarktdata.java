@@ -9,6 +9,7 @@ import JSON.JSONArray;
 import JSON.JSONObject;
 import http.Http;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.util.Date;
 import mysql.Mysql;
@@ -39,20 +40,19 @@ public class bittrexMarktdata {
                 bekend = marktCheck(dbNaam);
                 if (bekend) {
                     ResultSet rs = mysql.mysqlSelect("SELECT idMarktNaam FROM marktnaam where marktnaamDb = '" + dbNaam + "'");
-                    if (rs.next()) 
-                        idMarktNaam  = rs.getInt("idMarktNaam");
-
+                    if (rs.next()) {
+                        idMarktNaam = rs.getInt("idMarktNaam");
                     }
+                    updateMarkt(autoCountObject, idMarktNaam);
                     String sqlString = sqlString(autoCountObject, timeStamp, idMarktNaam);
                     mysql.mysqlExecute(sqlString);
-
                 }
 
             }
 
         }
 
-    
+    }
 
     private String sqlString(JSONObject autocoutObject, int idtimestamp, int idMarktNaam) {
         double high = autocoutObject.getDouble("High");
@@ -108,6 +108,33 @@ public class bittrexMarktdata {
             }
         }
         return timeId;
+    }
+
+    private void updateMarkt(JSONObject autocoutObject, int idMarktNaam) throws Exception {
+        String sqlString = " ";
+        double high = autocoutObject.getDouble("High");
+        double low = autocoutObject.getDouble("Low");
+        double volume = autocoutObject.getDouble("Volume");
+        double bid = autocoutObject.getDouble("Bid");
+        double ask = autocoutObject.getDouble("Ask");
+        double last = autocoutObject.getDouble("Last");
+        double volumeBTC = volume * last;
+        int count = mysql.mysqlCount("SELECT COUNT(*) AS total FROM marktupdate WHERE idMarktNaam = '" + idMarktNaam + "' and idHandelsplaats = 1");
+        if (count < 1) {
+            sqlString = "INSERT INTO marktupdate(high, low, volume, volumeBTC, bid, ask, last, idMarktNaam, idHandelsplaats) values "
+                    + "('" + high + "', '" + low + "', '" + volume + "', '" + volumeBTC + "', '" + bid + "', '" + ask + "', '" + last + "', '" + idMarktNaam + "', '" + BITTREX_NUMMER + "')";
+        } else if (count == 1) {
+            sqlString = "UPDATE marktupdate SET high = '" + high + "' and low = '" + low + "' and volume = '" + volume + "' and volumeBTC = '" + volumeBTC
+                    + "' and bid =" + bid + " and ask = '" + ask + "' and last = '" + last + "' where idMarktNaam = '" + idMarktNaam + "' and idhandelsplaats = 1";
+            if (idMarktNaam == 10903) {
+
+                System.out.println(mysql.mysqlCount("SELECT COUNT(*) AS total FROM marktupdate WHERE idMarktNaam = '" + idMarktNaam + "' and idHandelsplaats = 1"));
+                System.out.println(sqlString);
+            }
+
+        }
+        mysql.mysqlExecute(sqlString);
+
     }
 
 }
