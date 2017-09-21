@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package invullenMarktlijst;
 
 import JSON.JSONArray;
@@ -84,13 +79,15 @@ public class BittrexMarktUpdate extends MainMarktUpdate {
                 super.marktNaam(marktNaamDB, objectCount.getString("BaseCurrency"), objectCount.getString("MarketCurrency"));
 
                 //voeg de markt toe in de marktLijsten
-                super.marktLijsten(BITTREX_NUMMER, marktNaamDB, marktNaamDB, objectCount.getInt("MinTradeSize"));
+                //code moet verbeterd worden
+                //super.marktLijsten(BITTREX_NUMMER, marktNaamDB, marktNaamDB, objectCount.getInt("MinTradeSize"));
 
             } else {
                 System.out.println("MarktNaamDB: " + marktNaamDB + "staat al in de marktLijsten database.");
 
                 //voeg de markt toe in de marktLijsten
-                super.marktLijsten(BITTREX_NUMMER, marktNaamDB, marktNaamDB, objectCount.getInt("MinTradeSize"));
+                //code moet verbeterd worden
+                //super.marktLijsten(BITTREX_NUMMER, marktNaamDB, marktNaamDB, objectCount.getInt("MinTradeSize"));
             }
         }
     }
