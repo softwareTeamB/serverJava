@@ -13,7 +13,9 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import invullenMarktlijst.BitstampMarktUpdate;
+import invullenMarktlijst.GDAXMarktUpdate;
 import marktGevens.Bitstamp;
+import marktGevens.GDAX;
 
 /**
  *
@@ -48,10 +50,12 @@ public class ServerJava {
         }*/
         //BittrexMarktUpdate bittrexMarktUpdate = new BittrexMarktUpdate("bittrex");
         //bittrexMarktUpdate.marktUpdateLijsten();
-        BitstampMarktUpdate bMU = new BitstampMarktUpdate();
+        /*BitstampMarktUpdate bMU = new BitstampMarktUpdate();
         bMU.marktUpdateLijsten();
         
-        dataMarktUpdater();
+        dataMarktUpdater();*/
+        GDAXMarktUpdate gdaxAddMarkt = new GDAXMarktUpdate("GDAX");
+        gdaxAddMarkt.marktUpdateLijsten();
         
         
     }
