@@ -13,6 +13,7 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import invullenMarktlijst.BitstampMarktUpdate;
+import marktGevens.Bitstamp;
 
 /**
  *
@@ -50,6 +51,20 @@ public class ServerJava {
         BitstampMarktUpdate bMU = new BitstampMarktUpdate();
         bMU.marktUpdateLijsten();
         
+        dataMarktUpdater();
         
+        
+    }
+    
+    private static void dataMarktUpdater(){
+        
+        try {
+            Bitstamp bitstamp = new Bitstamp("bitstamp", true);
+            bitstamp.getMarktData();
+        } catch (SQLException ex) {
+            System.err.println(ex);
+        } catch (Exception ex) {
+            System.err.println(ex);
+        }
     }
 }
