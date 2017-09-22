@@ -8,7 +8,6 @@ package invullenMarktlijst;
 import JSON.JSONArray;
 import JSON.JSONObject;
 import http.Http;
-import java.sql.Array;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
