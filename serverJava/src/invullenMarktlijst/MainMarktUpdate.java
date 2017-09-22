@@ -1,5 +1,7 @@
 package invullenMarktlijst;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.sql.SQLException;
 import mysql.Mysql;
 
@@ -24,7 +26,6 @@ public abstract class MainMarktUpdate {
      * @param marktNaamDB db markt naam
      * @param baseCoin base coin
      * @param marktCoin markt coin
-     * @return return het nummer dat de marktNaamDB heeft
      * @throws Exception error exception
      */
     public int marktNaam(String marktNaamDB, String baseCoin, String marktCoin) throws Exception {
@@ -43,7 +44,7 @@ public abstract class MainMarktUpdate {
             mysql.mysqlExecute(insertSql);
 
             System.out.println("Marktnaam is in de database toegevoegd");
-
+            
             //vraag het nummer op
             String sqlSelect = "SELECT idMarktNaam AS nummer FROM marktnaam"
                     + " WHERE marktnaamDb='" + marktNaamDB + "';";
@@ -83,8 +84,12 @@ public abstract class MainMarktUpdate {
      * @param marktNaamExchange
      * @param tradeMinSize
      */
-    public void insertMarktLijsten(int exchangeNummer, int marktNaamDB, String marktNaamExchange, int tradeMinSize) {
-
+    public void marktLijsten(int exchangeNummer, String marktNaamDB, String marktNaamExchange, int tradeMinSize) throws SQLException {
+      
+        //insert in marktlijsten
+        String insertInto = "INSERT INTO marktLijsten(idHandelsplaats, idMarktNaam, naamMarkt) "
+                + "VALUES (" + exchangeNummer + ", " + marktNaamDB + ", '" + marktNaamExchange + "')";
+        mysql.mysqlExecute(insertInto);
     }
 
     //abstracten methoden
@@ -116,5 +121,4 @@ public abstract class MainMarktUpdate {
     public String getUrl_GDAX() {
         return URL_GDAX;
     }
-
 }
