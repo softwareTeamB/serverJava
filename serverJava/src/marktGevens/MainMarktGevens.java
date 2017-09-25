@@ -104,6 +104,8 @@ public abstract class MainMarktGevens {
         /**
      * Methoden om de memory te vullen met een jsonobject db
      *
+     * @param exchangeNaam naam van de handelsplaats
+     * @return return een object waar een array in zit en een JSONObject
      * @throws SQLException als er een error is
      */
     public JSONObject fixKeysMarktLijst(String exchangeNaam) throws SQLException {
