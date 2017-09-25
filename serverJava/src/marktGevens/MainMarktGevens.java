@@ -1,5 +1,9 @@
 package marktGevens;
 
+import JSON.JSONArray;
+import JSON.JSONObject;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import mysql.Mysql;
 
 /**
@@ -64,9 +68,84 @@ public abstract class MainMarktGevens {
         } else {
 
             //update stament
-            //String updateSql = ;
-            System.err.println("De markt data moet geupdate worden maar die code is nog niet gebouwd");
+            String sqlUpdate = "UPDATE marktupdate"
+                    + " SET high= " + high + ","
+                    + " low = " + low + ","
+                    + " volume = " + volume + ","
+                    + " volumeBTC= " + volumeBTC + ","
+                    + " bid=" + bid + ","
+                    + " ask=" + ask + ","
+                    + " last=" + last
+                    + " WHERE idMarktNaam='" + idMarktnaam + "'"
+                    + " AND idHandelsplaats='" + idHandelsplaats + "'";
+
+            //updater
+            mysql.mysqlExecute(sqlUpdate);
         }
 
+        if (history) {
+            System.err.println("Bouw de code in het opslaat in de markt history");
+        }
     }
+
+    /**
+     * Methoden om de exchange nummer te krijgen
+     *
+     * @param exchangeNaam exchange naam
+     * @return het exchange nummer in de database
+     * @throws Exception
+     */
+    public int getExchangeNummer(String exchangeNaam) throws Exception {
+
+        String getNummer = "SELECT getExchangeNummer('" + exchangeNaam + "') AS nummer;";
+        return mysql.mysqlNummer(getNummer);
+    }
+    
+        /**
+     * Methoden om de memory te vullen met een jsonobject db
+     *
+     * @throws SQLException als er een error is
+     */
+    public JSONObject fixKeysMarktLijst(String exchangeNaam) throws SQLException {
+        
+        JSONArray arrayMarkt = new JSONArray();
+        JSONObject marktKey = new JSONObject();
+
+        //count is voor later belangrijk
+        int count = 0;
+
+        //vraag alle marken op uit de exchange
+        String sqSelectl = "SELECT * FROM marktlijstvolv1 WHERE handelsplaatsNaam='" + exchangeNaam + "'";
+        ResultSet rs = mysql.mysqlSelect(sqSelectl);
+
+        //loop door de resultset heen
+        while (rs.next()) {
+
+            //update count
+            count = 1;
+
+            //marktnaamExchange
+            String marktNaam = rs.getString("naamMarkt");
+            int idMarktNaam = rs.getInt("idMarktNaam");
+
+            //array
+            arrayMarkt.put(marktNaam);
+
+            //object
+            marktKey.put(marktNaam, idMarktNaam);
+        }
+
+        if (count == 0) {
+            throw new SQLException("Er is geen lege reponse.");
+        }
+        
+        //maak er een object van
+        JSONObject responseObject = new JSONObject();
+        responseObject.put("object",marktKey);
+        responseObject.put("array", arrayMarkt);
+        
+        //reponse object
+        return responseObject;
+    }
+
 }

@@ -51,8 +51,12 @@ public class Bitstamp extends MainMarktGevens {
         //vul die variable die de data opslaat
         this.saveData = saveData;
 
-        //roep de methoden op die de markten gaat regelen
-        fixKeysMarktLijst();
+        //roep de methoden op die fixKeysMarktlijst
+        JSONObject responsUpdate = super.fixKeysMarktLijst(exchangeNaam);
+        this.arrayMarkt = responsUpdate.getJSONArray("array");
+        this.markKey = responsUpdate.getJSONObject("object");
+        
+        //print de markt key uit
         System.out.println(markKey);
 
     }
@@ -107,42 +111,4 @@ public class Bitstamp extends MainMarktGevens {
         }
 
     }
-
-    /**
-     * Methoden om de memory te vullen met een jsonobject db
-     *
-     * @throws SQLException als er een error is
-     */
-    public void fixKeysMarktLijst() throws SQLException {
-
-        //count is voor later belangrijk
-        int count = 0;
-
-        //vraag alle marken op uit de exchange
-        String sqSelectl = "SELECT * FROM marktlijstvolv1 WHERE handelsplaatsNaam='" + NAAM_EXCHANGE + "'";
-        ResultSet rs = mysql.mysqlSelect(sqSelectl);
-
-        //loop door de resultset heen
-        while (rs.next()) {
-
-            //update count
-            count = 1;
-
-            //marktnaamExchange
-            String marktNaam = rs.getString("naamMarkt");
-            int idMarktNaam = rs.getInt("idMarktNaam");
-
-            //array
-            arrayMarkt.put(marktNaam);
-
-            //object
-            markKey.put(marktNaam, idMarktNaam);
-        }
-
-        if (count == 0) {
-            throw new SQLException("Er is geen lege reponse.");
-        }
-
-    }
-
 }
