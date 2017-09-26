@@ -25,6 +25,12 @@ public class bittrexMarktdata {
     private final int BITTREX_NUMMER = 1;
     private final String url = "https://bittrex.com/api/v1.1/public/getmarketsummaries";
 
+    /**
+     * Main methoden die reload moet worden
+     *
+     * @throws IOException als er een file error is
+     * @throws Exception als er andere exceptie plaats vind
+     */
     public void bittrexMarktdataControler() throws IOException, Exception {
         boolean bekend = false;
         int idMarktNaam = 0;
@@ -53,6 +59,14 @@ public class bittrexMarktdata {
 
     }
 
+    /**
+     * Methoden die een sql stament maakt die uitgevoerd moet worden
+     *
+     * @param autocoutObject het object
+     * @param idtimestamp id nummer van de timestamp
+     * @param idMarktNaam id marktnaam
+     * @return sql Insert string
+     */
     private String sqlString(JSONObject autocoutObject, int idtimestamp, int idMarktNaam) {
         double high = autocoutObject.getDouble("High");
         double low = autocoutObject.getDouble("Low");
@@ -92,6 +106,12 @@ public class bittrexMarktdata {
         return gelukt;
     }
 
+    /**
+     * Methoden die het id nummer van de timestamp return
+     *
+     * @return idTimestamp
+     * @throws Exception als er een error is mysql
+     */
     private int timeStamp() throws Exception {
         int timeId = 0;
         Date date = new Date();
@@ -108,7 +128,13 @@ public class bittrexMarktdata {
         }
         return timeId;
     }
-
+    
+    /**
+     * Markt updater
+     * @param autocoutObject de exchange object
+     * @param idMarktNaam idmarktnaam
+     * @throws Exception als er een mysql error is
+     */
     private void updateMarkt(JSONObject autocoutObject, int idMarktNaam) throws Exception {
         String sqlString = " ";
         double high = autocoutObject.getDouble("High");
@@ -119,15 +145,13 @@ public class bittrexMarktdata {
         double last = autocoutObject.getDouble("Last");
         double volumeBTC = volume * last;
         int count = mysql.mysqlCount("SELECT COUNT(*) AS total FROM marktupdate WHERE idMarktNaam = '" + idMarktNaam + "' and idHandelsplaats = 1");
-        
-        
+
         if (count < 1) {
             sqlString = "INSERT INTO marktupdate(high, low, volume, volumeBTC, bid, ask, last, idMarktNaam, idHandelsplaats) values "
                     + "('" + high + "', '" + low + "', '" + volume + "', '" + volumeBTC + "', '" + bid + "', '" + ask + "', '" + last + "', '" + idMarktNaam + "', '" + BITTREX_NUMMER + "')";
         } else if (count == 1) {
             sqlString = "UPDATE marktupdate SET high = '" + high + "', low = '" + low + "', volume = '" + volume + "', volumeBTC = '" + volumeBTC
                     + "', bid =" + bid + ", ask = '" + ask + "', last = '" + last + "' where idMarktNaam = '" + idMarktNaam + "' and idhandelsplaats = 1";
-            
 
         }
         mysql.mysqlExecute(sqlString);
