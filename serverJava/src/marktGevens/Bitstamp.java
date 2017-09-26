@@ -20,7 +20,7 @@ public class Bitstamp extends MainMarktGevens {
     private final String NAAM_EXCHANGE;
     private final int idExchange;
     private final String BASIS_URL = "	https://www.bitstamp.net/api/v2";
-    private final boolean saveData;
+    private boolean saveData;
 
     //jsonarray
     JSONArray arrayMarkt;
@@ -55,7 +55,7 @@ public class Bitstamp extends MainMarktGevens {
         JSONObject responsUpdate = super.fixKeysMarktLijst(exchangeNaam);
         this.arrayMarkt = responsUpdate.getJSONArray("array");
         this.markKey = responsUpdate.getJSONObject("object");
-        
+
         //print de markt key uit
         System.out.println(markKey);
 
@@ -101,14 +101,26 @@ public class Bitstamp extends MainMarktGevens {
                 volumeBTC = response.getDouble("volume") * bid;
 
             }
-            
+
             //als er een error op treed bij het toevoegen of updaten van de data
             try {
                 super.marktDataUpdate(high, low, volume, volumeBTC, bid, ask, last, idExchange, markKey.getInt(marktNaam), saveData);
             } catch (Exception ex) {
-                System.err.println("Error bij bitstamp in de package marktGegevens. "+ex);
+                System.err.println("Error bij bitstamp in de package marktGegevens. " + ex);
             }
         }
 
+    }
+
+    /**
+     * Een methoden om in de klasse een update door te geven of er data wel of niet opgeslagen moet worden
+     *
+     * @param saveData een boolean of alle data in het database opgeslagen moet worden
+     */
+    @Override
+    public void setterSaveData(boolean saveData) {
+
+        //update private methoden van de save boolean
+        this.saveData = saveData;
     }
 }

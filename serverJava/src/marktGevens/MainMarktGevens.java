@@ -15,8 +15,10 @@ public abstract class MainMarktGevens {
 
     Mysql mysql = new Mysql();
 
+    //abstracten methodens
     public abstract void getMarktData();
-
+    public abstract void setterSaveData(boolean saveData);
+    
     /**
      * Markt saver
      *

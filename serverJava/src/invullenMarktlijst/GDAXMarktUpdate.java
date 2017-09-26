@@ -47,7 +47,7 @@ public class GDAXMarktUpdate extends MainMarktUpdate {
 
         //http get url string
         String reponseString = http.getHTTP(super.getUrl_GDAX() + "/products");
-        
+
         //zet de reponse in een JSONArray
         JSONArray array = new JSONArray(reponseString);
 
@@ -63,8 +63,11 @@ public class GDAXMarktUpdate extends MainMarktUpdate {
             //count string
             String countSql = "SELECT COUNT(*) AS total FROM marktlijsten WHERE naamMarkt='" + naamMarkt + "'"
                     + " AND idHandelsplaats=" + exchangeNummer + "";
+            System.out.println(countSql);
             int count = mysql.mysqlCount(countSql);
-
+            
+            System.out.println(count);
+            
             //kijk of de markt aan in de lijst staat
             if (count == 0) {
 
@@ -100,12 +103,11 @@ public class GDAXMarktUpdate extends MainMarktUpdate {
         if ("USD".equals(secCoin)) {
             secCoin = "USDT";
         }
-        
+
         System.out.println(naamMarkt);
 
         //kijken hoe de naamMarktDB genoemt moet worden
         switch (naamMarkt) {
-            case "BTC-USD":
             case "BTC-EUR":
             case "BTC-GBP":
             case "ETH-EUR":
@@ -115,6 +117,7 @@ public class GDAXMarktUpdate extends MainMarktUpdate {
                 //zet de switchSuccesVol op true
                 switchSuccesVol = true;
                 break;
+            case "BTC-USD":
             case "ETH-BTC":
             case "ETH-USD":
             case "LTC-BTC":
@@ -138,8 +141,9 @@ public class GDAXMarktUpdate extends MainMarktUpdate {
 
         //kijk of de dbnaam in de lijst staat
         String sqlCount = "SELECT COUNT(*) AS total FROM marktnaam WHERE marktnaamDb='" + naamMarktDB + "';";
+        System.out.println(sqlCount);
         int count = mysql.mysqlCount(sqlCount);
-        
+
         //markt nummer
         int marktDBNummer;
 
@@ -147,23 +151,21 @@ public class GDAXMarktUpdate extends MainMarktUpdate {
         if (count == 0) {
 
             //roep de methoden op
-             marktDBNummer = addMarktNaam(naamMarktDB, baseCoin, secCoin);
+            marktDBNummer = addMarktNaam(naamMarktDB, baseCoin, secCoin);
         } else {
-            
+
             //vraag het markt naam op
-            String sqlSelect= "SELECT idMarktNaam AS nummr FROM marktnaam WHERE marktnaamDb='"+naamMarktDB+"'";
+            String sqlSelect = "SELECT idMarktNaam AS nummer FROM marktnaam WHERE marktnaamDb='" + naamMarktDB + "'";
+            System.out.println(sqlSelect);
             marktDBNummer = mysql.mysqlNummer(sqlSelect);
-            
-            
-            
         }
 
         //insert stament
-        String insertMarktLijsten = "INSERT INTO marktLijsten (idHandelsplaats, idMarktNaam, naamMarkt) "+
-                "VALUES("+exchangeNummer+", "+marktDBNummer+", '"+naamMarktDB+"')";
+        String insertMarktLijsten = "INSERT INTO marktLijsten (idHandelsplaats, idMarktNaam, naamMarkt) "
+                + "VALUES(" + exchangeNummer + ", " + marktDBNummer + ", '" + object.getString("id") + "')";
+        System.out.println(insertMarktLijsten);
         mysql.mysqlExecute(insertMarktLijsten);
-        
-        
+
         return true;
     }
 
@@ -177,7 +179,8 @@ public class GDAXMarktUpdate extends MainMarktUpdate {
     private int addMarktNaam(String marktNaamDB, String baseCoin, String marktCoin) throws SQLException, Exception {
 
         //vul de nieuwe markt in en geef de int nummer terug
-        String callStament = "CALL addMarktNaamDB(" + marktNaamDB + ", " + baseCoin + ", " + marktCoin + ")";
+        String callStament = "SELECT addMarktNaamDB('" + marktNaamDB + "',' " + baseCoin + "', '" + marktCoin + "') AS"
+                + " nummer";
         System.out.println(callStament);
         return mysql.mysqlNummer(callStament);
 
