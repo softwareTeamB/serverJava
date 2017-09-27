@@ -48,6 +48,8 @@ public class Bittrex extends MainMarktGevens {
 
         //vul die variable die de data opslaat
         this.saveData = saveData;
+
+        System.out.println("Bittrex constructor in marktGegevens geladen.");
     }
 
     /**
@@ -75,7 +77,7 @@ public class Bittrex extends MainMarktGevens {
         }
 
         //maak een array aan met alle data
-        JSONArray array = new JSONArray();
+        JSONArray array = reponseObject.getJSONArray("result");
 
         //start de for loop
         for (int i = 0; i < array.length(); i++) {
@@ -83,12 +85,14 @@ public class Bittrex extends MainMarktGevens {
             //vul het jsonobject met het eerst volgende object
             JSONObject object = array.getJSONObject(i);
 
-            String idMarktNaamSql = "SELECT idMarktNaam FROM marktnaam "
+            String idMarktNaamSql = "SELECT idMarktNaam AS nummer FROM marktnaam "
                     + "WHERE marktnaamDb = '" + object.getString("MarketName") + "'";
+
+            int idMarktNaam = -1;
 
             //vraag de idMarktNaam op
             try {
-                int idMarktNaam = mysql.mysqlExchangeNummer(idMarktNaamSql);
+                idMarktNaam = mysql.mysqlExchangeNummer(idMarktNaamSql);
             } catch (Exception ex) {
                 System.err.println(ex);
 
@@ -108,6 +112,22 @@ public class Bittrex extends MainMarktGevens {
 
             }
 
+            //als het idMarktNaam -1 blijft roep dan de try catch op
+            if (idMarktNaam == -1) {
+                try {
+                    //roep de methoden op die alle markten van bittrex bij moet houden
+                    BittrexMarktUpdate bmp = new BittrexMarktUpdate("bittrex");
+                    bmp.marktUpdateLijsten();
+                } catch (Exception ex1) {
+
+                    //print de error
+                    System.err.println(ex1);
+
+                    //sluit de applicatie omdat er geen oplossing meer is
+                    System.exit(0);
+                }
+            }
+
             //vraag de markt data op
             double high = object.getDouble("High");
             double low = object.getDouble("Low");
@@ -119,7 +139,7 @@ public class Bittrex extends MainMarktGevens {
 
             //roep de methoden op die de data verwerkt
             try {
-                super.marktDataUpdate(high, low, volume, volumeBTC, bid, ask, last, idExchange, idExchange, saveData);
+                super.marktDataUpdate(high, low, volume, volumeBTC, bid, ask, last, idMarktNaam, idExchange, saveData);
             } catch (Exception ex) {
 
                 //problemen met het database
