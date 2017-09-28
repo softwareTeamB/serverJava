@@ -18,6 +18,7 @@ public abstract class MainMarktUpdate {
     //urls
     private final String URL_BITTREX = "https://bittrex.com/api/v1.1";
     private final String URL_BITSTAMP = "https://www.bitstamp.net/api/v2/";
+    private final String URL_GDAX = "https://api-public.sandbox.gdax.com";
 
     /**
      * Voeg marktnaam toe
@@ -43,6 +44,11 @@ public abstract class MainMarktUpdate {
             mysql.mysqlExecute(insertSql);
 
             System.out.println("Marktnaam is in de database toegevoegd");
+           
+            //vraag het nummer op
+            String sqlSelect = "SELECT idMarktNaam AS nummer FROM marktnaam"
+                    + " WHERE marktnaamDb='" + marktNaamDB + "';";
+
 
         } else {
             System.out.println("marktNaamDB staat in de database");
@@ -104,5 +110,14 @@ public abstract class MainMarktUpdate {
      */
     public String getURL_BITSTAMP() {
         return URL_BITSTAMP;
+    }
+
+    /**
+     * Getter voor GDAX url;
+     *
+     * @return GDAX url
+     */
+    public String getUrl_GDAX() {
+        return URL_GDAX;
     }
 }

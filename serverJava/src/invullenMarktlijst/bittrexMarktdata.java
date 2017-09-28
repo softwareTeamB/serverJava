@@ -26,10 +26,10 @@ public class bittrexMarktdata {
     private final String url = "https://bittrex.com/api/v1.1/public/getmarketsummaries";
 
     /**
-     * invullen data in de marktlijsten
      *
-     * @throws IOException
-     * @throws Exception
+     * @throws IOException als er een file error is
+     * @throws Exception als er andere exceptie plaats vind >>>>>>>
+     * refs/remotes/origin/master
      */
     public void bittrexMarktdataControler() throws IOException, Exception {
         boolean bekend = false;
@@ -60,12 +60,12 @@ public class bittrexMarktdata {
     }
 
     /**
-     * aanmaken String voor de database
      *
      * @param autocoutObject object waar informatie coin in zit
      * @param idtimestamp timestamp van het moment dat de data is opgehaald
      * @param idMarktNaam primary key van de markt in de database
-     * @return String voor invullen in marktlijst history
+     * @return String voor invullen in marktlijst history ======= Methoden die
+     * een sql stament maakt die uitgevoerd moet worden
      */
     private String sqlString(JSONObject autocoutObject, int idtimestamp, int idMarktNaam) {
         double high = autocoutObject.getDouble("High");
@@ -114,10 +114,10 @@ public class bittrexMarktdata {
     }
 
     /**
-     * aanmaken timestamp van huidig moment
      *
      * @return id van de timestamp in de database
      * @throws Exception
+     *
      */
     private int timeStamp() throws Exception {
         int timeId = 0;
@@ -137,11 +137,12 @@ public class bittrexMarktdata {
     }
 
     /**
-     * updaten informatie in de huidige markten
+     * Markt updater
      *
-     * @param autocoutObject object waar informatie coin in zit
-     * @param idMarktNaam primary key van de markt in de database
-     * @throws Exception
+     * @param autocoutObject de exchange object
+     * @param idMarktNaam idmarktnaam
+     * @throws Exception als er een mysql error is
+     *
      */
     private void updateMarkt(JSONObject autocoutObject, int idMarktNaam) throws Exception {
         String sqlString = " ";

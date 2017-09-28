@@ -11,9 +11,9 @@ package mysql;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
+import java.sql.SQLDataException;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.concurrent.locks.StampedLock;
 
 /**
  *
@@ -104,6 +104,53 @@ public class Mysql {
 
         //als er een error optreed
         throw new Exception("Mysql kan geen nummer return geven");
+    }
+
+    /**
+     * Return nummer wat er is
+     *
+     * @param sqlString nummer
+     * @return return 1 nummer
+     * @throws SQLException sql error
+     * @throws Exception andere exceptions
+     */
+    public int mysqlNummer(String sqlString) throws SQLException, Exception {
+
+        //maak contact
+        Connection conn;
+        conn = DriverManager.getConnection(CONN_STRING, USERNAME, PASSWORD);
+        Statement stmt = (Statement) conn.createStatement();
+
+        //return
+        ResultSet rs = stmt.executeQuery(sqlString);
+        while (rs.next()) {
+            return rs.getInt("nummer");
+        }
+
+        //als er een error optreed
+        throw new Exception("Mysql kan geen nummer return geven");
+    }
+
+    /**
+     * Return het nummer van de marktID
+     *
+     * @param sqlString sql string het count object met nummer heten
+     * @return het nummer
+     * @throws SQLException als de database response leeg is
+     */
+    public int mysqlIdMarktNaam(String sqlString) throws SQLException {
+
+        //maak contact
+        Connection conn;
+        conn = DriverManager.getConnection(CONN_STRING, USERNAME, PASSWORD);
+        Statement stmt = (Statement) conn.createStatement();
+
+        //return
+        ResultSet rs = stmt.executeQuery(sqlString);
+        while (rs.next()) {
+            return rs.getInt("nummer");
+        }
+        throw new SQLDataException("De database reponse is leeg");
     }
 
 }
