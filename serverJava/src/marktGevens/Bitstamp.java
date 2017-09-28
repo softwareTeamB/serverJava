@@ -20,7 +20,7 @@ public class Bitstamp extends MainMarktGevens {
     private final String NAAM_EXCHANGE;
     private final int idExchange;
     private final String BASIS_URL = "	https://www.bitstamp.net/api/v2";
-    private final boolean saveData;
+    private boolean saveData;
 
     //jsonarray
     JSONArray arrayMarkt;
@@ -51,8 +51,12 @@ public class Bitstamp extends MainMarktGevens {
         //vul die variable die de data opslaat
         this.saveData = saveData;
 
-        //roep de methoden op die de markten gaat regelen
-        fixKeysMarktLijst();
+        //roep de methoden op die fixKeysMarktlijst
+        JSONObject responsUpdate = super.fixKeysMarktLijst(exchangeNaam);
+        this.arrayMarkt = responsUpdate.getJSONArray("array");
+        this.markKey = responsUpdate.getJSONObject("object");
+
+        //print de markt key uit
         System.out.println(markKey);
 
     }
@@ -97,52 +101,26 @@ public class Bitstamp extends MainMarktGevens {
                 volumeBTC = response.getDouble("volume") * bid;
 
             }
-            
+
             //als er een error op treed bij het toevoegen of updaten van de data
             try {
                 super.marktDataUpdate(high, low, volume, volumeBTC, bid, ask, last, idExchange, markKey.getInt(marktNaam), saveData);
             } catch (Exception ex) {
-                System.err.println("Error bij bitstamp in de package marktGegevens. "+ex);
+                System.err.println("Error bij bitstamp in de package marktGegevens. " + ex);
             }
         }
 
     }
 
     /**
-     * Methoden om de memory te vullen met een jsonobject db
+     * Een methoden om in de klasse een update door te geven of er data wel of niet opgeslagen moet worden
      *
-     * @throws SQLException als er een error is
+     * @param saveData een boolean of alle data in het database opgeslagen moet worden
      */
-    public void fixKeysMarktLijst() throws SQLException {
+    @Override
+    public void setterSaveData(boolean saveData) {
 
-        //count is voor later belangrijk
-        int count = 0;
-
-        //vraag alle marken op uit de exchange
-        String sqSelectl = "SELECT * FROM marktlijstvolv1 WHERE handelsplaatsNaam='" + NAAM_EXCHANGE + "'";
-        ResultSet rs = mysql.mysqlSelect(sqSelectl);
-
-        //loop door de resultset heen
-        while (rs.next()) {
-
-            //update count
-            count = 1;
-
-            //marktnaamExchange
-            String marktNaam = rs.getString("naamMarkt");
-            int idMarktNaam = rs.getInt("idMarktNaam");
-
-            //array
-            arrayMarkt.put(marktNaam);
-
-            //object
-            markKey.put(marktNaam, idMarktNaam);
-        }
-
-        if (count == 0) {
-            throw new SQLException("Er is geen lege reponse.");
-        }
-
+        //update private methoden van de save boolean
+        this.saveData = saveData;
     }
-
 }
