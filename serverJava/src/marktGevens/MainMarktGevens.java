@@ -53,7 +53,6 @@ public abstract class MainMarktGevens {
                 + " WHERE idMarktNaam='" + idMarktnaam + "'"
                 + " AND idHandelsplaats='" + idHandelsplaats + "'";
         int count = mysql.mysqlCount(countSql);
-        System.out.println(count);
 
         //als de markt niet bekend is word het toegevoegd
         //of anders worde de markt update
@@ -62,7 +61,7 @@ public abstract class MainMarktGevens {
             //sql insert stament
             String sqlString = "INSERT INTO marktupdate(high, low, volume, volumeBTC, bid, ask, last, idMarktNaam, idHandelsplaats) values "
                     + "('" + high + "', '" + low + "', '" + volume + "', '" + volumeBTC + "', '" + bid + "', '" + ask + "', '" + last + "', '" + idMarktnaam + "', '" + +idHandelsplaats + "')";
-
+            
             //voeg toe in mysql
             mysql.mysqlExecute(sqlString);
 
