@@ -1,5 +1,6 @@
 package marktGevens;
 
+import global.LoadPropFile;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,7 +19,9 @@ public class SaveController {
 
     //booleans
     private boolean loadBittrex, loadPoloniex, loadGDAX;
-
+    
+    private int reloadTime;
+    
     //classe namen
     Bittrex bittrex;
 
@@ -29,7 +32,7 @@ public class SaveController {
             loadBittrex();
         }
     };
-
+    
     /**
      * Construcotr
      */
@@ -38,6 +41,15 @@ public class SaveController {
         //probeer alle klasse aan te maken
         try {
             this.bittrex = new Bittrex("bittrex", loadBittrex);
+            
+            
+            //maak de config properties klasse aan en reload het bestand
+            LoadPropFile loadPropFile = new LoadPropFile();
+            Properties prop = loadPropFile.loadPropFile("./config/config.properties");
+            
+            this.reloadTime = Integer.parseInt(prop.getProperty("reloadTijd"));
+            
+            
         } catch (Exception ex) {
             //laat de error zijn
             Logger.getLogger(SaveController.class.getName()).log(Level.SEVERE, null, ex);
@@ -52,15 +64,11 @@ public class SaveController {
      */
     public void runSaver() {
 
-        //maak een nieuwe thread aan voor bittrex
-        Thread bittrexThread = new Thread(task1);
-        bittrexThread.start();
-
         //great timer
         Timer timer = new Timer();
 
         //timer schema
-        timer.schedule(task1, new Date(), 60000);
+        timer.schedule(task1, new Date(), reloadTime);
 
     }
 
@@ -95,6 +103,7 @@ public class SaveController {
         } catch (IOException ex) {
             System.err.println(ex);
         } finally {
+            
             //close de input
             if (input != null) {
                 try {
