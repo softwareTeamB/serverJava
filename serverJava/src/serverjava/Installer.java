@@ -18,7 +18,7 @@ public class Installer {
 
     //folder naam locatie
     private final String[] FOLDER_NAME = {"config", "temp"};
-    private final String[] BESTAND_CHECK = {"config.properties", "saveMarktData.properties"};
+    private final String[] BESTAND_CHECK = {"loadExchange.properties", "config.properties", "saveMarktData.properties"};
 
     //boolean
     private boolean succes = true;
@@ -31,6 +31,14 @@ public class Installer {
         //roep de folderCheck op
         folderCheck();
         bestandCheck();
+        try {
+            configProperties();
+        } catch (IOException ex) {
+            Logger.getLogger(Installer.class.getName()).log(Level.SEVERE, null, ex);
+
+            System.err.println("er is een fatale pc error gekomen. Programma word automatisch afgesloten");
+            System.exit(0);
+        }
 
     }
 
@@ -70,19 +78,15 @@ public class Installer {
      */
     private void bestandCheck() {
 
-        for (int i = 0; i < BESTAND_CHECK.length; i++) {
-            String bestandNaam = BESTAND_CHECK[i];
-
-            //maak de variable bestand naam
-            File f = new File("/config/" + bestandNaam);
-
-            //kijk of het bestand bestaat
+        OUTER:
+        for (String bestandNaam : BESTAND_CHECK) {
+            System.out.println(bestandNaam);
+            File f = new File("./config/" + bestandNaam);
             if (!f.exists()) {
+                System.err.println("Bestand: " + bestandNaam + " bestaat niet.");
 
-                //switch
+                //switchn
                 switch (bestandNaam) {
-
-                    //om een properties bestand aan temaken 
                     case "config.properties":
                         try {
                             configProperties();
@@ -93,14 +97,23 @@ public class Installer {
                             //Stop het systeem omdat het een fatale error is
                             System.exit(0);
                         }
-                        break;
-
-                    //om een properties bestand aan temaken 
+                        break OUTER;
+                    //om een properties bestand aan temaken
                     case "saveMarktData.properties":
                         try {
-                           marktLijstProperties();
+                            marktLijstProperties();
                         } catch (IOException ex) {
                             System.err.println(ex);
+
+                            //Stop het systeem omdat het een fatale error is
+                            System.exit(0);
+                        }
+                        break OUTER;
+                    case "loadExchange.properties":
+                        try {
+                            loadExchangeProperties();
+                        } catch (IOException ex) {
+                            Logger.getLogger(Installer.class.getName()).log(Level.SEVERE, null, ex);
 
                             //Stop het systeem omdat het een fatale error is
                             System.exit(0);
@@ -108,15 +121,15 @@ public class Installer {
                         break;
                     default:
                         //omdat het bestand moet bestaan word het gezien als een fatale error
-                        System.err.println("Het bestand niet en kan niet door het systeem worden aangemaakt!");
+                        System.err.println("Het bestand niet en kan niet door het systeem worden aangemaakt!"
+                                + " Bestand naam is " + bestandNaam + ".");
 
                         //Stop het systeem omdat het een fatale error is
                         System.exit(0);
-                        break;
                 }
+
             } else {
-                //omdat het bestand moet bestaan word het gezien als een fatale error
-                System.out.println("Het bestand "+ bestandNaam +" bestaat.");
+                System.out.println("Het bestand " + bestandNaam + " bestaat.");
             }
         }
     }
@@ -137,6 +150,30 @@ public class Installer {
 
         // set the properties value
         prop.setProperty("reloadMarktDataSave", "true");
+        prop.setProperty("reloadTijd", "60000");
+        prop.setProperty("checkMarktLijst", "false");
+
+        // save properties in config folder
+        prop.store(output, null);
+    }
+
+    /*
+     * Methoden om loadExchange aan te maken
+     *
+     * @throws FileNotFoundException als het bestand niet is gevonden
+     * @throws IOException als er een file error is
+     */
+    private void loadExchangeProperties() throws FileNotFoundException, IOException {
+        //input file
+        Properties prop = new Properties();
+        OutputStream output;
+
+        output = new FileOutputStream("./config/loadExchange.properties");
+
+        // set the properties value
+        prop.setProperty("bittrex", "true");
+        prop.setProperty("bitstamp", "true");
+        prop.setProperty("GDAX", "false");
 
         // save properties in config folder
         prop.store(output, null);
