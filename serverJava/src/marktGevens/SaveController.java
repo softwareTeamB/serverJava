@@ -19,17 +19,25 @@ public class SaveController {
 
     //booleans
     private boolean loadBittrex, loadPoloniex, loadGDAX, loadBitstamp;
-
-    private int reloadTime;
-
+    private boolean saveBittrex, savePoloniex, saveGDAX, saveBitstamp;
+    private final int RELOAD_TIME;
+    
+    
     //classe namen
     Bittrex bittrex;
     Bitstamp bitstamp;
+    
+    //properties
+    Properties prop;
 
     private TimerTask task1 = new TimerTask() {
 
         @Override
         public void run() {
+            
+            //reload de boolean
+            loadBoolean();
+            
             //roep de methoden op
             loadBittrex();
             loadBitstamp();
@@ -38,20 +46,22 @@ public class SaveController {
 
     /**
      * Construcotr
+     * @param reloadTime om te hoeveel tijd de methodes reload moeten worden
      */
-    public SaveController() {
+    public SaveController(int reloadTime) {
 
+        //vul reloadTime
+        this.RELOAD_TIME = reloadTime;
+        
         //probeer alle klasse aan te maken
         try {
-            this.bittrex = new Bittrex("bittrex", loadBittrex);
-            this.bitstamp = new Bitstamp("bitstamp", loadBitstamp);
+            this.bittrex = new Bittrex("bittrex", false);
+            this.bitstamp = new Bitstamp("bitstamp", false);
 
             //maak de config properties klasse aan en reload het bestand
             LoadPropFile loadPropFile = new LoadPropFile();
-            Properties prop = loadPropFile.loadPropFile("./config/config.properties");
-
-            this.reloadTime = Integer.parseInt(prop.getProperty("reloadTijd"));
-
+            Properties prop = loadPropFile.loadPropFile("./config/loadExchange.properties");
+            this.prop = prop;
         } catch (Exception ex) {
             //laat de error zijn
             Logger.getLogger(SaveController.class.getName()).log(Level.SEVERE, null, ex);
@@ -70,7 +80,7 @@ public class SaveController {
         Timer timer = new Timer();
 
         //timer schema
-        timer.schedule(task1, new Date(), reloadTime);
+        timer.schedule(task1, new Date(), RELOAD_TIME);
 
     }
 
@@ -158,6 +168,7 @@ public class SaveController {
     private void loadBittrex() {
 
         //kijk of bittrex geladen moet worden
+        System.out.println(loadBittrex);
         if (loadBittrex) {
 
             try {

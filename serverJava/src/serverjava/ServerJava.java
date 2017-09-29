@@ -20,7 +20,8 @@ import marktGevens.SaveController;
 public class ServerJava {
 
     //private static methoden
-    private static SaveController saveController = new SaveController();
+    private static SaveController saveController;
+    private static int reloadTime;
 
     //task controller voor saveController
     private static final TimerTask SAVE_CONTROLLER_TASK = new TimerTask() {
@@ -48,6 +49,7 @@ public class ServerJava {
         Properties prop;
         try {
             prop = loadPropFile.loadPropFile("./config/config.properties");
+            reloadTime = Integer.parseInt(prop.getProperty("reloadTijd"));
         } catch (IOException ex) {
 
             prop = new Properties();
@@ -57,9 +59,12 @@ public class ServerJava {
             System.err.println("Er een systeem error. Het programma wordt afgesloten");
             System.exit(0);
         }
-
+        
+        //de constructor van de saveController
+        saveController = new SaveController(reloadTime);
+        
         //kijk of marktlijsten ingevuld moet worden
-        boolean vulMarktLijsten;
+        //boolean vulMarktLijsten;
         String configVulMarktLijsten = prop.getProperty("checkMarktLijst");
 
         if ("true".equals(configVulMarktLijsten)) {
