@@ -18,21 +18,24 @@ import java.util.logging.Logger;
 public class SaveController {
 
     //booleans
-    private boolean loadBittrex, loadPoloniex, loadGDAX;
-    
+    private boolean loadBittrex, loadPoloniex, loadGDAX, loadBitstamp;
+
     private int reloadTime;
-    
+
     //classe namen
     Bittrex bittrex;
+    Bitstamp bitstamp;
 
     private TimerTask task1 = new TimerTask() {
 
         @Override
         public void run() {
+            //roep de methoden op
             loadBittrex();
+            loadBitstamp();
         }
     };
-    
+
     /**
      * Construcotr
      */
@@ -41,15 +44,14 @@ public class SaveController {
         //probeer alle klasse aan te maken
         try {
             this.bittrex = new Bittrex("bittrex", loadBittrex);
-            
-            
+            this.bitstamp = new Bitstamp("bitstamp", loadBitstamp);
+
             //maak de config properties klasse aan en reload het bestand
             LoadPropFile loadPropFile = new LoadPropFile();
             Properties prop = loadPropFile.loadPropFile("./config/config.properties");
-            
+
             this.reloadTime = Integer.parseInt(prop.getProperty("reloadTijd"));
-            
-            
+
         } catch (Exception ex) {
             //laat de error zijn
             Logger.getLogger(SaveController.class.getName()).log(Level.SEVERE, null, ex);
@@ -75,7 +77,7 @@ public class SaveController {
     /**
      * laat boolean
      */
-    private void loadBoolean() {
+    public void loadBoolean() {
         Properties prop = new Properties();
         InputStream input = null;
 
@@ -89,6 +91,7 @@ public class SaveController {
             // get the property value and print it out
             String bittrexProp = prop.getProperty("bittrex");
 
+            //swithc er door heen
             switch (bittrexProp) {
                 case "false":
                     this.loadBittrex = false;
@@ -100,10 +103,43 @@ public class SaveController {
                     System.err.println("Bij bittrexProp is niet true of false");
                     break;
             }
+
+            // get the property value and print it out
+            String bitstamProp = prop.getProperty("bitstamp");
+
+            //swithc er door heen
+            switch (bitstamProp) {
+                case "false":
+                    this.loadBitstamp = false;
+                    break;
+                case "true":
+                    this.loadBitstamp = true;
+                    break;
+                default:
+                    System.err.println("Bij bitstamProp is niet true of false");
+                    break;
+            }
+
+            // get the property value and print it out
+            String GDAXProp = prop.getProperty("bitstamp");
+
+            //swithc er door heen
+            switch (GDAXProp) {
+                case "false":
+                    this.loadGDAX = false;
+                    break;
+                case "true":
+                    this.loadGDAX = true;
+                    break;
+                default:
+                    System.err.println("Bij GDAXProp is niet true of false");
+                    break;
+            }
+
         } catch (IOException ex) {
             System.err.println(ex);
         } finally {
-            
+
             //close de input
             if (input != null) {
                 try {
@@ -121,12 +157,37 @@ public class SaveController {
      */
     private void loadBittrex() {
 
-        try {
-            //reload alle methoden om de minut
-            bittrex.getMarktData();
-        } catch (Exception ex) {
-            System.err.println(ex);
+        //kijk of bittrex geladen moet worden
+        if (loadBittrex) {
+
+            try {
+                //reload alle methoden om de minut
+                bittrex.getMarktData();
+            } catch (Exception ex) {
+                System.err.println(ex);
+            }
+        } else {
+            System.out.println("Bittrex getData wordt niet geladen.");
         }
+    }
+
+    /**
+     * Methoden die bitstamp laat
+     */
+    private void loadBitstamp() {
+        //kijk of bitstamp geladen moet worden
+        if (loadBitstamp) {
+
+            try {
+                //reload alle methoden om de minut
+                bitstamp.getMarktData();
+            } catch (Exception ex) {
+                System.err.println(ex);
+            }
+        } else {
+            System.out.println("Bitstamp getData wordt niet geladen.");
+        }
+        
     }
 
 }
