@@ -66,7 +66,7 @@ public class ServerJava {
         //kijk of marktlijsten ingevuld moet worden
         //boolean vulMarktLijsten;
         String configVulMarktLijsten = prop.getProperty("checkMarktLijst");
-
+        //String configVulMarktLijsten = "true";
         if ("true".equals(configVulMarktLijsten)) {
             //hier wordt de methoden opgeroepen die het invullen van de marktLijsten regeld
             try {

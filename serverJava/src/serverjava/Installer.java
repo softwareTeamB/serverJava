@@ -30,7 +30,7 @@ public class Installer {
 
         //roep de folderCheck op
         folderCheck();
-        bestandCheck();
+        //bestandCheck();
         try {
             configProperties();
         } catch (IOException ex) {
@@ -80,7 +80,7 @@ public class Installer {
 
         OUTER:
         for (String bestandNaam : BESTAND_CHECK) {
-            System.out.println(bestandNaam);
+            
             File f = new File("./config/" + bestandNaam);
             if (!f.exists()) {
                 System.err.println("Bestand: " + bestandNaam + " bestaat niet.");
