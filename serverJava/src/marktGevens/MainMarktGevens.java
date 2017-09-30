@@ -17,7 +17,6 @@ public abstract class MainMarktGevens {
 
     //abstracten methodens
     public abstract void getMarktData(boolean saveData);
-    public abstract void setterSaveData(boolean saveData);
     
     /**
      * Markt saver

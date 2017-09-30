@@ -56,14 +56,15 @@ public class SaveController {
 
         //probeer alle klasse aan te maken
         try {
-            this.bittrex = new Bittrex("bittrex", false);
-            this.bitstamp = new Bitstamp("bitstamp", false);
+            this.bittrex = new Bittrex("bittrex");
+            this.bitstamp = new Bitstamp("bitstamp");
 
             //maak de config properties klasse aan en reload het bestand
             LoadPropFile loadPropFile = new LoadPropFile();
             Properties prop = loadPropFile.loadPropFile("./config/loadExchange.properties");
             this.prop = prop;
         } catch (Exception ex) {
+            
             //laat de error zijn
             Logger.getLogger(SaveController.class.getName()).log(Level.SEVERE, null, ex);
 

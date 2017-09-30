@@ -23,13 +23,8 @@ public class GDAX extends MainMarktGevens {
     //exchange nummer
     private final int ID_EXCHANGE;
     private final String EXCHANGE_NAAM = "GDAX";
-    private boolean saveData;
-
+    
     public GDAX(boolean saveData) throws Exception {
-        
-        //geef aan of alle markt data opgeslagen moet worden
-        this.saveData = saveData;
-
         //vul de final met de exchange id nummer
         this.ID_EXCHANGE = super.getExchangeNummer(EXCHANGE_NAAM);
 
@@ -37,7 +32,8 @@ public class GDAX extends MainMarktGevens {
     }
 
     /**
-     *
+     *Methoden om alle data te krijgen
+     * @param saveData sla de data op
      */
     @Override
     public void getMarktData(boolean saveData) {
@@ -48,16 +44,4 @@ public class GDAX extends MainMarktGevens {
     //       TimeUnit.SECONDS.sleep(1);   
     
     
-    /**
-     * Een methoden om in de klasse een update door te geven of er data wel of niet opgeslagen moet worden
-     *
-     * @param saveData een boolean of alle data in het database opgeslagen moet worden
-     */
-    @Override
-    public void setterSaveData(boolean saveData) {
-
-        //update private methoden van de save boolean
-        this.saveData = saveData;
-    }
-
 }
