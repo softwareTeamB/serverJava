@@ -40,7 +40,7 @@ public class GDAX extends MainMarktGevens {
      *
      */
     @Override
-    public void getMarktData() {
+    public void getMarktData(boolean saveData) {
         
     }
 

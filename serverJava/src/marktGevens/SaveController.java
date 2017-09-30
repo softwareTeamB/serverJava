@@ -21,12 +21,11 @@ public class SaveController {
     private boolean loadBittrex, loadPoloniex, loadGDAX, loadBitstamp;
     private boolean saveBittrex, savePoloniex, saveGDAX, saveBitstamp;
     private final int RELOAD_TIME;
-    
-    
+
     //classe namen
     Bittrex bittrex;
     Bitstamp bitstamp;
-    
+
     //properties
     Properties prop;
 
@@ -34,10 +33,11 @@ public class SaveController {
 
         @Override
         public void run() {
-            
+
             //reload de boolean
             loadBoolean();
-            
+            saveBoolean();
+
             //roep de methoden op
             loadBittrex();
             loadBitstamp();
@@ -46,13 +46,14 @@ public class SaveController {
 
     /**
      * Construcotr
+     *
      * @param reloadTime om te hoeveel tijd de methodes reload moeten worden
      */
     public SaveController(int reloadTime) {
 
         //vul reloadTime
         this.RELOAD_TIME = reloadTime;
-        
+
         //probeer alle klasse aan te maken
         try {
             this.bittrex = new Bittrex("bittrex", false);
@@ -93,7 +94,7 @@ public class SaveController {
 
         try {
 
-            input = new FileInputStream("./config/saveMarktData.properties");
+            input = new FileInputStream("./config/loadExchange.properties");
 
             // load a properties file
             prop.load(input);
@@ -155,7 +156,86 @@ public class SaveController {
                 try {
                     input.close();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    System.err.println(e);
+                }
+            }
+        }
+
+    }
+
+    /**
+     * save boolean
+     */
+    private void saveBoolean() {
+
+        Properties prop = new Properties();
+        InputStream input = null;
+
+        try {
+
+            input = new FileInputStream("./config/saveMarktData.properties");
+
+            // load a properties file
+            prop.load(input);
+
+            // get the property value and print it out
+            String bittrexProp = prop.getProperty("bittrex");
+
+            //swithc er door heen
+            switch (bittrexProp) {
+                case "false":
+                    this.saveBittrex = false;
+                    break;
+                case "true":
+                    this.saveBittrex = true;
+                    break;
+                default:
+                    System.err.println("Bij bittrexProp is niet true of false");
+                    break;
+            }
+
+            // get the property value and print it out
+            String bitstamProp = prop.getProperty("bitstamp");
+
+            //swithc er door heen
+            switch (bitstamProp) {
+                case "false":
+                    this.saveBitstamp = false;
+                    break;
+                case "true":
+                    this.saveBitstamp = true;
+                    break;
+                default:
+                    System.err.println("Bij bitstamProp is niet true of false");
+                    break;
+            }
+
+            // get the property value and print it out
+            String GDAXProp = prop.getProperty("bitstamp");
+
+            //swithc er door heen
+            switch (GDAXProp) {
+                case "false":
+                    this.saveGDAX = false;
+                    break;
+                case "true":
+                    this.saveGDAX = true;
+                    break;
+                default:
+                    System.err.println("Bij GDAXProp is niet true of false");
+                    break;
+            }
+
+        } catch (IOException ex) {
+            System.err.println(ex);
+        } finally {
+
+            //close de input
+            if (input != null) {
+                try {
+                    input.close();
+                } catch (IOException e) {
+                    System.err.println(e);
                 }
             }
         }
@@ -168,12 +248,11 @@ public class SaveController {
     private void loadBittrex() {
 
         //kijk of bittrex geladen moet worden
-        System.out.println(loadBittrex);
         if (loadBittrex) {
 
             try {
                 //reload alle methoden om de minut
-                bittrex.getMarktData();
+                bittrex.getMarktData(saveBittrex);
             } catch (Exception ex) {
                 System.err.println(ex);
             }
@@ -186,19 +265,20 @@ public class SaveController {
      * Methoden die bitstamp laat
      */
     private void loadBitstamp() {
+
         //kijk of bitstamp geladen moet worden
         if (loadBitstamp) {
 
             try {
                 //reload alle methoden om de minut
-                bitstamp.getMarktData();
+                bitstamp.getMarktData(saveBitstamp);
             } catch (Exception ex) {
                 System.err.println(ex);
             }
         } else {
             System.out.println("Bitstamp getData wordt niet geladen.");
         }
-        
+
     }
 
 }

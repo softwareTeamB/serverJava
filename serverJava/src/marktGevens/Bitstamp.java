@@ -65,7 +65,7 @@ public class Bitstamp extends MainMarktGevens {
      * Vraag de markt data op
      */
     @Override
-    public void getMarktData() {
+    public void getMarktData(boolean saveData) {
 
         System.out.println(arrayMarkt);
 

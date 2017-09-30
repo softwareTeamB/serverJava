@@ -56,7 +56,7 @@ public class Bittrex extends MainMarktGevens {
      * Maak een markt updater
      */
     @Override
-    public void getMarktData() {
+    public void getMarktData(boolean saveData) {
 
         //maak een url
         String httpUrl = BASIS_URL + "/public/getmarketsummaries";
