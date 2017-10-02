@@ -87,6 +87,11 @@ public abstract class MainMarktGevens {
             System.err.println("Bouw de code in het opslaat in de markt history");
         }
     }
+    
+    private void saveTrickers(double ask, double bid, double volume){
+    
+    
+    }
 
     /**
      * Methoden om de exchange nummer te krijgen

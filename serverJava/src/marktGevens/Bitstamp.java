@@ -89,7 +89,7 @@ public class Bitstamp extends MainMarktGevens {
 
             if ("btcusd".equals(marktNaam)) {
                 //dit moet zo gebeuren omdat we van btc naar dollar om zetten en dat is dan het volume
-                volume = response.getDouble("volume") * bid;
+                volume = response.getDouble("volume");
                 volumeBTC = response.getDouble("volume");
             } else {
                 volume = response.getDouble("volume");

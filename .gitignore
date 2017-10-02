@@ -24,3 +24,10 @@ hs_err_pid*
 /serverJava/dist/
 /serverJava/build/
 /reqursief/nbproject/private/
+*.properties
+
+*.xml
+
+*.properties
+
+*.xml
