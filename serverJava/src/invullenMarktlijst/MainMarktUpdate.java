@@ -44,21 +44,20 @@ public abstract class MainMarktUpdate {
             mysql.mysqlExecute(insertSql);
 
             System.out.println("Marktnaam is in de database toegevoegd");
-            
+           
             //vraag het nummer op
             String sqlSelect = "SELECT idMarktNaam AS nummer FROM marktnaam"
                     + " WHERE marktnaamDb='" + marktNaamDB + "';";
 
-            return mysql.mysqlExchangeNummer(sqlSelect);
+
         } else {
             System.out.println("marktNaamDB staat in de database");
-
-            //vraag het nummer op
-            String sqlSelect = "SELECT idMarktNaam AS nummer FROM marktnaam"
-                    + " WHERE marktnaamDb='" + marktNaamDB + "';";
-
-            return mysql.mysqlExchangeNummer(sqlSelect);
         }
+        //vraag het nummer op
+        String sqlSelect = "SELECT idMarktNaam AS nummer FROM marktnaam"
+                + " WHERE marktnaamDb='" + marktNaamDB + "';";
+
+        return mysql.mysqlExchangeNummer(sqlSelect);
     }
 
     /**
@@ -85,7 +84,7 @@ public abstract class MainMarktUpdate {
      * @param tradeMinSize
      */
     public void marktLijsten(int exchangeNummer, String marktNaamDB, String marktNaamExchange, int tradeMinSize) throws SQLException {
-      
+
         //insert in marktlijsten
         String insertInto = "INSERT INTO marktLijsten(idHandelsplaats, idMarktNaam, naamMarkt) "
                 + "VALUES (" + exchangeNummer + ", " + marktNaamDB + ", '" + marktNaamExchange + "')";

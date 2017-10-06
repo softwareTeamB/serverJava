@@ -25,7 +25,7 @@ public class Mysql {
 
     //variable
     private final String USERNAME = "root";
-    private final String PASSWORD = "Pulsar11";
+    private final String PASSWORD = "Lolman513";
     private final String IPADDRESS = "localhost";
     private final String POORT = "3306";
     private final String DATABASENAAM = "serverproject";
