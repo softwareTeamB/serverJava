@@ -7,6 +7,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import invullenMarktlijst.BitstampMarktUpdate;
 import invullenMarktlijst.GDAXMarktUpdate;
+import marktGevens.Bittrex;
+import marktGevens.Poloniex;
 import java.io.IOException;
 import java.util.Properties;
 import java.util.TimerTask;
@@ -60,9 +62,20 @@ public class ServerJava {
             System.exit(0);
         }
         
+        try {
+            Poloniex poloniex = new Poloniex("poloniex", false);
+            //roep saveController
+            //SaveController saveController = new SaveController();
+
+            //Bittrex bittrex = new Bittrex("bittrex", false);
+            //bittrex.getMarktData();
+            //SaveController saveController = new SaveController();
+            //saveController.runSaver();
+        } catch (Exception ex) {
+            Logger.getLogger(ServerJava.class.getName()).log(Level.SEVERE, null, ex);
         //de constructor van de saveController
         saveController = new SaveController(reloadTime);
-        
+        }
         //kijk of marktlijsten ingevuld moet worden
         //boolean vulMarktLijsten;
         String configVulMarktLijsten = prop.getProperty("checkMarktLijst");

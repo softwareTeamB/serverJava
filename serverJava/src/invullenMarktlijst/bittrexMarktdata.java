@@ -26,10 +26,10 @@ public class bittrexMarktdata {
     private final String url = "https://bittrex.com/api/v1.1/public/getmarketsummaries";
 
     /**
-     * Main methoden die reload moet worden
      *
      * @throws IOException als er een file error is
-     * @throws Exception als er andere exceptie plaats vind
+     * @throws Exception als er andere exceptie plaats vind >>>>>>>
+     * refs/remotes/origin/master
      */
     public void bittrexMarktdataControler() throws IOException, Exception {
         boolean bekend = false;
@@ -60,12 +60,12 @@ public class bittrexMarktdata {
     }
 
     /**
-     * Methoden die een sql stament maakt die uitgevoerd moet worden
      *
-     * @param autocoutObject het object
-     * @param idtimestamp id nummer van de timestamp
-     * @param idMarktNaam id marktnaam
-     * @return sql Insert string
+     * @param autocoutObject object waar informatie coin in zit
+     * @param idtimestamp timestamp van het moment dat de data is opgehaald
+     * @param idMarktNaam primary key van de markt in de database
+     * @return String voor invullen in marktlijst history ======= Methoden die
+     * een sql stament maakt die uitgevoerd moet worden
      */
     private String sqlString(JSONObject autocoutObject, int idtimestamp, int idMarktNaam) {
         double high = autocoutObject.getDouble("High");
@@ -82,6 +82,13 @@ public class bittrexMarktdata {
         return sqlString;
     }
 
+    /**
+     * controle of markt bestaat in het systeem
+     *
+     * @param dbNaam primary key van de markt in de database
+     * @return is het controleren/aanmaken van de markt gelukt
+     * @throws Exception
+     */
     private boolean marktCheck(String dbNaam) throws Exception {
         boolean gelukt = false;
         boolean ronde2 = false;
@@ -107,10 +114,10 @@ public class bittrexMarktdata {
     }
 
     /**
-     * Methoden die het id nummer van de timestamp return
      *
-     * @return idTimestamp
-     * @throws Exception als er een error is mysql
+     * @return id van de timestamp in de database
+     * @throws Exception
+     *
      */
     private int timeStamp() throws Exception {
         int timeId = 0;
@@ -128,12 +135,14 @@ public class bittrexMarktdata {
         }
         return timeId;
     }
-    
+
     /**
      * Markt updater
+     *
      * @param autocoutObject de exchange object
      * @param idMarktNaam idmarktnaam
      * @throws Exception als er een mysql error is
+     *
      */
     private void updateMarkt(JSONObject autocoutObject, int idMarktNaam) throws Exception {
         String sqlString = " ";

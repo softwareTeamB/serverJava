@@ -17,7 +17,7 @@ public abstract class MainMarktGevens {
 
     //abstracten methodens
     public abstract void getMarktData(boolean saveData);
-    
+   
     /**
      * Markt saver
      *
@@ -51,8 +51,10 @@ public abstract class MainMarktGevens {
         String countSql = "SELECT COUNT(*) AS total FROM marktupdate"
                 + " WHERE idMarktNaam='" + idMarktnaam + "'"
                 + " AND idHandelsplaats='" + idHandelsplaats + "'";
-        int count = mysql.mysqlCount(countSql);
 
+        int count = mysql.mysqlCount(countSql);
+        System.out.println("count = " + count);
+        System.out.println(idHandelsplaats + "_" + idMarktnaam);
         //als de markt niet bekend is word het toegevoegd
         //of anders worde de markt update
         if (count == 0) {
@@ -60,7 +62,7 @@ public abstract class MainMarktGevens {
             //sql insert stament
             String sqlString = "INSERT INTO marktupdate(high, low, volume, volumeBTC, bid, ask, last, idMarktNaam, idHandelsplaats) values "
                     + "('" + high + "', '" + low + "', '" + volume + "', '" + volumeBTC + "', '" + bid + "', '" + ask + "', '" + last + "', '" + idMarktnaam + "', '" + +idHandelsplaats + "')";
-            
+            System.out.println(idHandelsplaats + "_" + idMarktnaam);
             //voeg toe in mysql
             mysql.mysqlExecute(sqlString);
 
@@ -105,8 +107,8 @@ public abstract class MainMarktGevens {
         String getNummer = "SELECT getExchangeNummer('" + exchangeNaam + "') AS nummer;";
         return mysql.mysqlNummer(getNummer);
     }
-    
-        /**
+
+    /**
      * Methoden om de memory te vullen met een jsonobject db
      *
      * @param exchangeNaam naam van de handelsplaats
@@ -114,7 +116,7 @@ public abstract class MainMarktGevens {
      * @throws SQLException als er een error is
      */
     public JSONObject fixKeysMarktLijst(String exchangeNaam) throws SQLException {
-        
+
         JSONArray arrayMarkt = new JSONArray();
         JSONObject marktKey = new JSONObject();
 
@@ -145,12 +147,12 @@ public abstract class MainMarktGevens {
         if (count == 0) {
             throw new SQLException("Er is geen lege reponse.");
         }
-        
+
         //maak er een object van
         JSONObject responseObject = new JSONObject();
-        responseObject.put("object",marktKey);
+        responseObject.put("object", marktKey);
         responseObject.put("array", arrayMarkt);
-        
+
         //reponse object
         return responseObject;
     }
