@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 import invullenMarktlijst.BitstampMarktUpdate;
 import invullenMarktlijst.GDAXMarktUpdate;
 import marktGevens.Bittrex;
+import marktGevens.Poloniex;
 import marktGevens.SaveController;
 
 /**
@@ -31,6 +32,7 @@ public class ServerJava {
         }
         
         try {
+            Poloniex poloniex = new Poloniex("poloniex", false);
             //roep saveController
             //SaveController saveController = new SaveController();
 
