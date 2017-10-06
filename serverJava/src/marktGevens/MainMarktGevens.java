@@ -16,10 +16,8 @@ public abstract class MainMarktGevens {
     Mysql mysql = new Mysql();
 
     //abstracten methodens
-    public abstract void getMarktData();
-
-    public abstract void setterSaveData(boolean saveData);
-
+    public abstract void getMarktData(boolean saveData);
+   
     /**
      * Markt saver
      *
@@ -90,6 +88,11 @@ public abstract class MainMarktGevens {
         if (history) {
             System.err.println("Bouw de code in het opslaat in de markt history");
         }
+    }
+    
+    private void saveTrickers(double ask, double bid, double volume){
+    
+    
     }
 
     /**

@@ -159,6 +159,8 @@ public class GDAXMarktUpdate extends MainMarktUpdate {
             System.out.println(sqlSelect);
             marktDBNummer = mysql.mysqlNummer(sqlSelect);
         }
+        
+        System.out.println(marktDBNummer);
 
         //insert stament
         String insertMarktLijsten = "INSERT INTO marktLijsten (idHandelsplaats, idMarktNaam, naamMarkt) "

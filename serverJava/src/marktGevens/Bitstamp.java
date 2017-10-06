@@ -20,7 +20,6 @@ public class Bitstamp extends MainMarktGevens {
     private final String NAAM_EXCHANGE;
     private final int idExchange;
     private final String BASIS_URL = "	https://www.bitstamp.net/api/v2";
-    private boolean saveData;
 
     //jsonarray
     JSONArray arrayMarkt;
@@ -30,10 +29,9 @@ public class Bitstamp extends MainMarktGevens {
      * Constructor
      *
      * @param exchangeNaam naam van de exchange
-     * @param saveData voeg data toe
      * @throws java.sql.SQLException sql errpr
      */
-    public Bitstamp(String exchangeNaam, boolean saveData) throws SQLException, Exception {
+    public Bitstamp(String exchangeNaam) throws SQLException, Exception {
 
         //maak een JSONArray aan
         this.arrayMarkt = new JSONArray();
@@ -47,9 +45,6 @@ public class Bitstamp extends MainMarktGevens {
         //id exchange
         String functionSql = "select getExchangeNummer('" + NAAM_EXCHANGE + "') AS nummer;";
         this.idExchange = mysql.mysqlExchangeNummer(functionSql);
-
-        //vul die variable die de data opslaat
-        this.saveData = saveData;
 
         //roep de methoden op die fixKeysMarktlijst
         JSONObject responsUpdate = super.fixKeysMarktLijst(exchangeNaam);
@@ -65,7 +60,7 @@ public class Bitstamp extends MainMarktGevens {
      * Vraag de markt data op
      */
     @Override
-    public void getMarktData() {
+    public void getMarktData(boolean saveData) {
 
         System.out.println(arrayMarkt);
 
@@ -94,7 +89,7 @@ public class Bitstamp extends MainMarktGevens {
 
             if ("btcusd".equals(marktNaam)) {
                 //dit moet zo gebeuren omdat we van btc naar dollar om zetten en dat is dan het volume
-                volume = response.getDouble("volume") * bid;
+                volume = response.getDouble("volume");
                 volumeBTC = response.getDouble("volume");
             } else {
                 volume = response.getDouble("volume");
@@ -110,17 +105,5 @@ public class Bitstamp extends MainMarktGevens {
             }
         }
 
-    }
-
-    /**
-     * Een methoden om in de klasse een update door te geven of er data wel of niet opgeslagen moet worden
-     *
-     * @param saveData een boolean of alle data in het database opgeslagen moet worden
-     */
-    @Override
-    public void setterSaveData(boolean saveData) {
-
-        //update private methoden van de save boolean
-        this.saveData = saveData;
     }
 }

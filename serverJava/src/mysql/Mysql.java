@@ -14,6 +14,8 @@ import java.sql.ResultSet;
 import java.sql.SQLDataException;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -30,7 +32,22 @@ public class Mysql {
     private final boolean AUTORECONNECT = true;
     private final boolean SSL = false;
     private final String CONN_STRING = "jdbc:mysql://" + IPADDRESS + ":" + POORT + "/" + DATABASENAAM + "?autoReconnect=" + AUTORECONNECT + "&useSSL=" + SSL;
+    private Statement stmt;
+    
+    public Mysql() {
+        try {
+            Connection conn;
+            conn = DriverManager.getConnection(CONN_STRING, USERNAME, PASSWORD);
+            this.stmt = (Statement) conn.createStatement();
+        } catch (SQLException ex) {
+            System.err.println("Er is een error opgetreden met het aanmaken van connenctie in mysql."
+                    +" De applicatie wordt veilig afgesloten.");
+            System.exit(0);
+        }
+    }
 
+    
+    
     /**
      * Select stament
      *
@@ -39,11 +56,7 @@ public class Mysql {
      * @throws SQLException als er iets fout gaat
      */
     public ResultSet mysqlSelect(String sqlString) throws SQLException {
-
-        Connection conn;
-        conn = DriverManager.getConnection(CONN_STRING, USERNAME, PASSWORD);
-        Statement stmt = (Statement) conn.createStatement();
-
+        
         //return
         return stmt.executeQuery(sqlString);
     }
@@ -56,21 +69,16 @@ public class Mysql {
      */
     public void mysqlExecute(String sqlString) throws SQLException {
 
-        Connection conn;
-        conn = DriverManager.getConnection(CONN_STRING, USERNAME, PASSWORD);
-        Statement stmt = (Statement) conn.createStatement();
-
+        
         //run stament
         stmt.execute(sqlString);
+        
+        return;
     }
 
     public int mysqlCount(String sqlString) throws SQLException, Exception {
 
-        //maak contact
-        Connection conn;
-        conn = DriverManager.getConnection(CONN_STRING, USERNAME, PASSWORD);
-        Statement stmt = (Statement) conn.createStatement();
-
+        
         //return
         ResultSet rs = stmt.executeQuery(sqlString);
         while (rs.next()) {
@@ -91,11 +99,7 @@ public class Mysql {
      */
     public int mysqlExchangeNummer(String sqlString) throws SQLException, Exception {
 
-        //maak contact
-        Connection conn;
-        conn = DriverManager.getConnection(CONN_STRING, USERNAME, PASSWORD);
-        Statement stmt = (Statement) conn.createStatement();
-
+      
         //return
         ResultSet rs = stmt.executeQuery(sqlString);
         while (rs.next()) {
@@ -116,11 +120,6 @@ public class Mysql {
      */
     public int mysqlNummer(String sqlString) throws SQLException, Exception {
 
-        //maak contact
-        Connection conn;
-        conn = DriverManager.getConnection(CONN_STRING, USERNAME, PASSWORD);
-        Statement stmt = (Statement) conn.createStatement();
-
         //return
         ResultSet rs = stmt.executeQuery(sqlString);
         while (rs.next()) {
@@ -139,11 +138,6 @@ public class Mysql {
      * @throws SQLException als de database response leeg is
      */
     public int mysqlIdMarktNaam(String sqlString) throws SQLException {
-
-        //maak contact
-        Connection conn;
-        conn = DriverManager.getConnection(CONN_STRING, USERNAME, PASSWORD);
-        Statement stmt = (Statement) conn.createStatement();
 
         //return
         ResultSet rs = stmt.executeQuery(sqlString);

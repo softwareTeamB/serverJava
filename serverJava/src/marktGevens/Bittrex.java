@@ -24,7 +24,6 @@ public class Bittrex extends MainMarktGevens {
     private final String NAAM_EXCHANGE;
     private final int idExchange;
     private final String BASIS_URL = "https://bittrex.com/api/v1.1";
-    private boolean saveData;
 
     //jsonarray
     JSONArray arrayMarkt;
@@ -34,10 +33,9 @@ public class Bittrex extends MainMarktGevens {
      * Roep de constructor aan
      *
      * @param exchangeNaam
-     * @param saveData
      * @throws java.lang.Exception error exceptie
      */
-    public Bittrex(String exchangeNaam, boolean saveData) throws Exception {
+    public Bittrex(String exchangeNaam) throws Exception {
 
         //naam van de exchnage
         this.NAAM_EXCHANGE = exchangeNaam;
@@ -46,9 +44,6 @@ public class Bittrex extends MainMarktGevens {
         String functionSql = "select getExchangeNummer('" + NAAM_EXCHANGE + "') AS nummer;";
         this.idExchange = mysql.mysqlExchangeNummer(functionSql);
 
-        //vul die variable die de data opslaat
-        this.saveData = saveData;
-
         System.out.println("Bittrex constructor in marktGegevens geladen.");
     }
 
@@ -56,7 +51,7 @@ public class Bittrex extends MainMarktGevens {
      * Maak een markt updater
      */
     @Override
-    public void getMarktData() {
+    public void getMarktData(boolean saveData) {
 
         //maak een url
         String httpUrl = BASIS_URL + "/public/getmarketsummaries";
@@ -146,16 +141,5 @@ public class Bittrex extends MainMarktGevens {
                 System.err.println(ex);
             }
         }
-
-    }
-
-    /**
-     * Methoden om boolean te updaten
-     *
-     * @param saveData boolean of de markt data opgeslagen moet worden
-     */
-    @Override
-    public void setterSaveData(boolean saveData) {
-        this.saveData = saveData;
     }
 }
