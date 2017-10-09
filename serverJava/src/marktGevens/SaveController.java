@@ -1,5 +1,6 @@
 package marktGevens;
 
+import global.ConsoleColor;
 import global.LoadPropFile;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -67,6 +68,9 @@ public class SaveController {
             
             //laat de error zijn
             Logger.getLogger(SaveController.class.getName()).log(Level.SEVERE, null, ex);
+            
+            ConsoleColor.err("Er is een error in de constructor van de saveController. De error is "+ ex
+                    + " . \n Het systeem wordt veilig afgesloten.");
 
             //sluit af omdat het belangrijke systeem probleem is
             System.exit(0);
@@ -83,7 +87,6 @@ public class SaveController {
 
         //timer schema
         timer.schedule(task1, new Date(), RELOAD_TIME);
-
     }
 
     /**
