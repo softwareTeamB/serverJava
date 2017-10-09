@@ -23,7 +23,6 @@ public class Poloniex extends MainMarktGevens {
     private final String NAAM_EXCHANGE;
     private final int idExchange;
     private final String BASIS_URL = "https://poloniex.com/public?command=returnTicker";
-    private boolean saveData;
 
     //jsonarray
     JSONArray arrayMarkt;
@@ -44,8 +43,6 @@ public class Poloniex extends MainMarktGevens {
         String functionSql = "select getExchangeNummer('" + NAAM_EXCHANGE + "') AS nummer;";
         this.idExchange = mysql.mysqlExchangeNummer(functionSql);
 
-        //vul die variable die de data opslaat
-        this.saveData = saveData;
 
         //roep de methoden op die fixKeysMarktlijst
         JSONObject responsUpdate = super.fixKeysMarktLijst(exchangeNaam);
