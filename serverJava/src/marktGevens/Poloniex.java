@@ -53,7 +53,7 @@ public class Poloniex extends MainMarktGevens {
         System.out.println(markKey);
     }
 
-
+    @Override
     public void getMarktData(boolean saveData) {
         System.out.println(arrayMarkt);
 
