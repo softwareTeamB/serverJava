@@ -32,7 +32,7 @@ public class ServerJava {
         public void run() {
             //run saver
             saveController.runSaver();
-            
+
             //boolean updater
             saveController.loadBoolean();
         }
@@ -61,21 +61,10 @@ public class ServerJava {
             System.err.println("Er een systeem error. Het programma wordt afgesloten");
             System.exit(0);
         }
-        
-        try {
-            Poloniex poloniex = new Poloniex("poloniex", false);
-            //roep saveController
-            //SaveController saveController = new SaveController();
 
-            //Bittrex bittrex = new Bittrex("bittrex", false);
-            //bittrex.getMarktData();
-            //SaveController saveController = new SaveController();
-            //saveController.runSaver();
-        } catch (Exception ex) {
-            Logger.getLogger(ServerJava.class.getName()).log(Level.SEVERE, null, ex);
-        //de constructor van de saveController
+        //constructor
         saveController = new SaveController(reloadTime);
-        }
+
         //kijk of marktlijsten ingevuld moet worden
         //boolean vulMarktLijsten;
         String configVulMarktLijsten = prop.getProperty("checkMarktLijst");
@@ -100,7 +89,6 @@ public class ServerJava {
         //run de saveController in een aparte thread
         Thread thread = new Thread(SAVE_CONTROLLER_TASK);
         thread.start();
-
     }
 
     /**

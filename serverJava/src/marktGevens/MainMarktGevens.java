@@ -53,8 +53,7 @@ public abstract class MainMarktGevens {
                 + " AND idHandelsplaats='" + idHandelsplaats + "'";
 
         int count = mysql.mysqlCount(countSql);
-        System.out.println("count = " + count);
-        System.out.println(idHandelsplaats + "_" + idMarktnaam);
+        
         //als de markt niet bekend is word het toegevoegd
         //of anders worde de markt update
         if (count == 0) {
@@ -90,6 +89,12 @@ public abstract class MainMarktGevens {
         }
     }
     
+    /**
+     * Om trickers op te slaan
+     * @param ask
+     * @param bid
+     * @param volume 
+     */
     private void saveTrickers(double ask, double bid, double volume){
     
     
