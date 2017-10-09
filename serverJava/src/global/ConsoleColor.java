@@ -85,7 +85,7 @@ public class ConsoleColor {
      *
      * @param bericht out bericht
      */
-    public static void out(String bericht) {
+    public static void out(Object bericht) {
 
         System.out.println(BLUE +"["+Datum.datum()+  "] [INFO] " + RESET + bericht);
     }
@@ -95,7 +95,7 @@ public class ConsoleColor {
      *
      * @param bericht out bericht
      */
-    public static void error(String bericht) {
+    public static void error(Object bericht) {
         System.out.println(RED +"["+Datum.datum()+  "] [ERROR] " + RESET + bericht);
     }
 
@@ -104,7 +104,7 @@ public class ConsoleColor {
      *
      * @param bericht out bericht
      */
-    public static void err(String bericht) {
+    public static void err(Object bericht) {
         System.out.println(RED +"["+Datum.datum()+  "] [ERROR] " + RESET + bericht);
     }
 
@@ -113,7 +113,7 @@ public class ConsoleColor {
      *
      * @param bericht out bericht
      */
-    public static void warn(String bericht) {
+    public static void warn(Object bericht) {
         System.out.println(YELLOW +"["+Datum.datum()+  "] [WARN] " + RESET + bericht);
     }
 }
