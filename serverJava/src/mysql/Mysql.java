@@ -33,21 +33,20 @@ public class Mysql {
     private final boolean SSL = false;
     private final String CONN_STRING = "jdbc:mysql://" + IPADDRESS + ":" + POORT + "/" + DATABASENAAM + "?autoReconnect=" + AUTORECONNECT + "&useSSL=" + SSL;
     private Statement stmt;
-    
+
     public Mysql() {
         try {
             Connection conn;
             conn = DriverManager.getConnection(CONN_STRING, USERNAME, PASSWORD);
             this.stmt = (Statement) conn.createStatement();
-        } catch (SQLException ex) {
+        } catch (SQLException ex){
+            System.out.println(ex);
             System.err.println("Er is een error opgetreden met het aanmaken van connenctie in mysql."
-                    +" De applicatie wordt veilig afgesloten.");
+                    + " De applicatie wordt veilig afgesloten.");
             System.exit(0);
         }
     }
 
-    
-    
     /**
      * Select stament
      *
@@ -56,7 +55,7 @@ public class Mysql {
      * @throws SQLException als er iets fout gaat
      */
     public ResultSet mysqlSelect(String sqlString) throws SQLException {
-        
+
         //return
         return stmt.executeQuery(sqlString);
     }
@@ -69,16 +68,14 @@ public class Mysql {
      */
     public void mysqlExecute(String sqlString) throws SQLException {
 
-        
         //run stament
         stmt.execute(sqlString);
-        
+
         return;
     }
 
     public int mysqlCount(String sqlString) throws SQLException, Exception {
 
-        
         //return
         ResultSet rs = stmt.executeQuery(sqlString);
         while (rs.next()) {
@@ -99,7 +96,6 @@ public class Mysql {
      */
     public int mysqlExchangeNummer(String sqlString) throws SQLException, Exception {
 
-      
         //return
         ResultSet rs = stmt.executeQuery(sqlString);
         while (rs.next()) {

@@ -63,7 +63,6 @@ public class ServerJava {
         }
 
         //constructor
-        saveController = new SaveController(reloadTime);
 
         //kijk of marktlijsten ingevuld moet worden
         //boolean vulMarktLijsten;
