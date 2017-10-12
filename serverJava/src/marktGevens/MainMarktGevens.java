@@ -4,6 +4,9 @@ import JSON.JSONArray;
 import JSON.JSONObject;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import mysql.Mysql;
 
 /**
@@ -17,7 +20,7 @@ public abstract class MainMarktGevens {
 
     //abstracten methodens
     public abstract void getMarktData(boolean saveData);
-   
+
     /**
      * Markt saver
      *
@@ -53,13 +56,13 @@ public abstract class MainMarktGevens {
                 + " AND idHandelsplaats='" + idHandelsplaats + "'";
 
         int count = mysql.mysqlCount(countSql);
-        
+
         //als de markt niet bekend is word het toegevoegd
         //of anders worde de markt update
         if (count == 0) {
 
             //sql insert stament
-            String sqlString = "INSERT INTO marktupdate(high, low, volume, volumeBTC, bid, ask, last, idMarktNaam, idHandelsplaats) values "
+            String sqlString = "INSERT INTO marktupdate(high, low, volume, volumeBTC, bid, ask, last, idHandelsplaats, idMarktNaam) values "
                     + "('" + high + "', '" + low + "', '" + volume + "', '" + volumeBTC + "', '" + bid + "', '" + ask + "', '" + last + "', '" + idMarktnaam + "', '" + +idHandelsplaats + "')";
             System.out.println(idHandelsplaats + "_" + idMarktnaam);
             //voeg toe in mysql
@@ -85,19 +88,76 @@ public abstract class MainMarktGevens {
         }
 
         if (history) {
-            System.err.println("Bouw de code in het opslaat in de markt history");
+            int time = timeStamp();
+            String sqlString = "INSERT INTO marktupdatehistory(high, low, volume, volumeBTC, bid, ask, last, idMarktNaam, idHandelsplaats, idtimestamp) values "
+                    + "('" + high + "', '" + low + "', '" + volume + "', '" + volumeBTC + "', '" + bid + "', '" + ask + "', '" + last + "', '" + idMarktnaam + "', '" + +idHandelsplaats + "', '"
+                    + time + "')";
+            
+            mysql.mysqlExecute(sqlString);
+
         }
     }
-    
+
+    private int timeStamp() throws Exception {
+
+        int timeId = 0;
+        Date date = new Date();
+        long time = date.getTime();
+        String timeStamp = String.valueOf(time / 1000);
+
+        //ophalen datum vandaag
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        //datum in losse delen zetten
+        int year = cal.get(Calendar.YEAR);
+        int month = cal.get(Calendar.MONTH);
+        int day = cal.get(Calendar.DAY_OF_MONTH);
+
+        //lose delen bewerken
+        String dayS = dmToString(day);
+        String monthS = dmToString(month);
+
+        //maken datum string
+        String dateString = year + "/" + monthS + "/" + dayS;
+
+        int count = mysql.mysqlCount("SELECT COUNT(*) AS total FROM timestamp WHERE time = '" + timeStamp + "'");
+
+        if (count < 1) {
+            mysql.mysqlExecute("INSERT INTO timestamp (time, date) values ('" + timeStamp + "', '" + dateString + "')");
+            ResultSet rs = mysql.mysqlSelect("SELECT idtimestamp from timestamp where time = '" + timeStamp + "'");
+            if (rs.next()) {
+                timeId = rs.getInt("idtimestamp");
+            }
+        }
+        return timeId;
+    }
+
+    /**
+     * aanpassen formaat zodat de datum in de database kan
+     *
+     * @param item maand of dag die bewerkt moet worden
+     * @return string die in de database past
+     */
+    private String dmToString(int item) {
+        String bewerkt = "";
+        if (item < 10) {
+            bewerkt = "0" + item;
+        } else {
+            bewerkt = "" + item;
+        }
+
+        return bewerkt;
+    }
+
     /**
      * Om trickers op te slaan
+     *
      * @param ask
      * @param bid
-     * @param volume 
+     * @param volume
      */
-    private void saveTrickers(double ask, double bid, double volume){
-    
-    
+    private void saveTrickers(double ask, double bid, double volume) {
+
     }
 
     /**
