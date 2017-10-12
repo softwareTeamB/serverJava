@@ -1,5 +1,6 @@
 package serverjava;
 
+import Gemiddelde.gemiddeldeMarktupdatehistory;
 import global.LoadPropFile;
 import invullenMarktlijst.BittrexMarktUpdate;
 import invullenMarktlijst.insertFuncties;
@@ -10,6 +11,9 @@ import invullenMarktlijst.GDAXMarktUpdate;
 import marktGevens.Bittrex;
 import marktGevens.Poloniex;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Properties;
 import java.util.TimerTask;
 import marktGevens.SaveController;
@@ -41,9 +45,10 @@ public class ServerJava {
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ParseException {
 
         //run even de installer
+        gemiddeldeMarktupdatehistory avg = new gemiddeldeMarktupdatehistory();
         Installer install = new Installer();
 
         //laat config prop file
@@ -61,9 +66,14 @@ public class ServerJava {
             System.err.println("Er een systeem error. Het programma wordt afgesloten");
             System.exit(0);
         }
+        
+       
+       
+       
+        avg.control(1, 12304, "bid", "2017-09-09", "2017-10-12");
 
         //constructor
-        saveController = new SaveController(reloadTime);
+        saveController = new SaveController(600000);
 
         //kijk of marktlijsten ingevuld moet worden
         //boolean vulMarktLijsten;
@@ -85,6 +95,7 @@ public class ServerJava {
         } else {
             System.out.println("invullenMarktLijst wordt niet geladen");
         }
+        gemiddeldeMarktupdatehistory markt = new gemiddeldeMarktupdatehistory();
 
         //run de saveController in een aparte thread
         Thread thread = new Thread(SAVE_CONTROLLER_TASK);
