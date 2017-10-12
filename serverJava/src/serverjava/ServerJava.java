@@ -10,7 +10,9 @@ import invullenMarktlijst.GDAXMarktUpdate;
 import marktGevens.Bittrex;
 import marktGevens.Poloniex;
 import java.io.IOException;
+import java.util.Date;
 import java.util.Properties;
+import java.util.Timer;
 import java.util.TimerTask;
 import marktGevens.SaveController;
 
@@ -37,6 +39,8 @@ public class ServerJava {
             saveController.loadBoolean();
         }
     };
+    
+
 
     /**
      * @param args the command line arguments
@@ -45,6 +49,7 @@ public class ServerJava {
 
         //run even de installer
         Installer install = new Installer();
+       
 
         //laat config prop file
         LoadPropFile loadPropFile = new LoadPropFile();
