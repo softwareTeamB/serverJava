@@ -7,6 +7,7 @@ import invullenMarktlijst.insertFuncties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import invullenMarktlijst.BitstampMarktUpdate;
+import invullenMarktlijst.CEXioMarktUpdate;
 import invullenMarktlijst.GDAXMarktUpdate;
 import marktGevens.Bittrex;
 import marktGevens.Poloniex;
@@ -45,7 +46,7 @@ public class ServerJava {
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) throws ParseException {
+    public static void main(String[] args) throws ParseException, Exception {
 
         //run even de installer
         gemiddeldeMarktupdatehistory avg = new gemiddeldeMarktupdatehistory();
@@ -66,10 +67,6 @@ public class ServerJava {
             System.err.println("Er een systeem error. Het programma wordt afgesloten");
             System.exit(0);
         }
-        
-       
-       
-       
         avg.control(1, 12304, "bid", "2017-09-09", "2017-10-12");
 
         //constructor

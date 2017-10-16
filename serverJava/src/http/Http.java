@@ -38,6 +38,11 @@ public class Http {
         String requestURL = uri;
         URL wikiRequest = new URL(requestURL);
         URLConnection connection = wikiRequest.openConnection();
+        connection.setRequestProperty("User-Agent", "Cex.io Java API");
+                connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+                connection.setRequestProperty("Accept-Charset", "utf8");
+                connection.setRequestProperty("Accept", "application/json");
+                connection.setRequestProperty("Charset", "utf8");
         connection.setDoOutput(true);
 
         Scanner scanner = new Scanner(wikiRequest.openStream());
