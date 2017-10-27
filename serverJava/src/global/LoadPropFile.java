@@ -5,7 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
-import serverjava.Installer;
+import serverjava.InstallerV2;
 
 /**
  *
@@ -20,17 +20,18 @@ public class LoadPropFile {
      * @return de properties info
      * @throws IOException file exception
      */
-    public Properties loadPropFile(String fileName) throws IOException {
+    public static Properties loadPropFile(String fileName) throws IOException {
         Properties prop = new Properties();
         InputStream input;
 
         try {
-            input = new FileInputStream("./config/config.properties");
+            input = new FileInputStream("./config/"+fileName+".properties");
         } catch (FileNotFoundException ex) {
             System.err.println(ex);
 
             //run de installer
-            Installer installer = new Installer();
+            InstallerV2 installer = new InstallerV2();
+            installer.main();
 
             //reload de funtie
             return loadPropFile(fileName);

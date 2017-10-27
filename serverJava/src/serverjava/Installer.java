@@ -174,7 +174,7 @@ public class Installer {
         prop.setProperty("bittrex", "true");
         prop.setProperty("bitstamp", "true");
         prop.setProperty("GDAX", "false");
-
+        
         // save properties in config folder
         prop.store(output, null);
     }

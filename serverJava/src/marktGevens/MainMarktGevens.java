@@ -2,9 +2,9 @@ package marktGevens;
 
 import JSON.JSONArray;
 import JSON.JSONObject;
+import global.ConsoleColor;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import mysql.Mysql;
@@ -62,13 +62,13 @@ public abstract class MainMarktGevens {
         if (count == 0) {
 
             //sql insert stament
-            String sqlString = "INSERT INTO marktupdate(high, low, volume, volumeBTC, bid, ask, last, idHandelsplaats, idMarktNaam) values "
+            String sqlString = "INSERT INTO marktupdate(high, low, volume, volumeBTC, bid, ask, last, idMarktNaam, idHandelsplaats) values "
                     + "('" + high + "', '" + low + "', '" + volume + "', '" + volumeBTC + "', '" + bid + "', '" + ask + "', '" + last + "', '" + idMarktnaam + "', '" + +idHandelsplaats + "')";
-            System.out.println(idHandelsplaats + "_" + idMarktnaam);
+            ConsoleColor.out(idHandelsplaats + "_" + idMarktnaam);
             //voeg toe in mysql
             mysql.mysqlExecute(sqlString);
 
-            System.out.println("Een markt is toegevoegd in marktupdate");
+            ConsoleColor.out("Een markt is toegevoegd in marktupdate");
         } else {
 
             //update stament
@@ -88,14 +88,23 @@ public abstract class MainMarktGevens {
         }
 
         if (history) {
-            int time = timeStamp();
             String sqlString = "INSERT INTO marktupdatehistory(high, low, volume, volumeBTC, bid, ask, last, idMarktNaam, idHandelsplaats, idtimestamp) values "
                     + "('" + high + "', '" + low + "', '" + volume + "', '" + volumeBTC + "', '" + bid + "', '" + ask + "', '" + last + "', '" + idMarktnaam + "', '" + +idHandelsplaats + "', '"
-                    + time + "')";
-            
+                    + timestampString() + "')";
+
             mysql.mysqlExecute(sqlString);
 
         }
+    }
+
+    private String timestampString() {
+
+        //get timetampx
+        Date date = new Date();
+        long time = date.getTime();
+        String timeStamp = String.valueOf(time / 1000);
+
+        return timeStamp;
     }
 
     private int timeStamp() throws Exception {

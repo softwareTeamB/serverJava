@@ -2,6 +2,7 @@ package marktGevens;
 
 import global.ConsoleColor;
 import global.LoadPropFile;
+import java.io.Console;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,13 +20,14 @@ import java.util.logging.Logger;
 public class SaveController {
 
     //booleans
-    private boolean loadBittrex, loadPoloniex, loadGDAX, loadBitstamp;
-    private boolean saveBittrex, savePoloniex, saveGDAX, saveBitstamp;
+    private boolean loadBittrex, loadPoloniex, loadGDAX, loadBitstamp, loadCexIo;
+    private boolean saveBittrex, savePoloniex, saveGDAX, saveBitstamp, saveCexIo;
     private final int RELOAD_TIME;
 
     //classe namen
     Bittrex bittrex;
     Bitstamp bitstamp;
+    CexIo cexIo;
 
     //properties
     Properties prop;
@@ -42,6 +44,7 @@ public class SaveController {
             //roep de methoden op
             loadBittrex();
             loadBitstamp();
+            loadCexIo();
         }
     };
 
@@ -58,18 +61,19 @@ public class SaveController {
         //probeer alle klasse aan te maken
         try {
             this.bittrex = new Bittrex("bittrex");
-           // this.bitstamp = new Bitstamp("bitstamp");
+            // this.bitstamp = new Bitstamp("bitstamp");
+            this.cexIo = new CexIo();
 
             //maak de config properties klasse aan en reload het bestand
             LoadPropFile loadPropFile = new LoadPropFile();
-            Properties prop = loadPropFile.loadPropFile("./config/loadExchange.properties");
+            Properties prop = loadPropFile.loadPropFile("loadExchange");
             this.prop = prop;
         } catch (Exception ex) {
-            
+
             //laat de error zijn
-            ConsoleColor.err(ex+"");
-            
-            ConsoleColor.err("Er is een error in de constructor van de saveController. De error is "+ ex
+            ConsoleColor.err(ex);
+
+            ConsoleColor.err("Er is een error in de constructor van de saveController. De error is " + ex
                     + " . \n Het systeem wordt veilig afgesloten.");
 
             //sluit af omdat het belangrijke systeem probleem is
@@ -115,7 +119,7 @@ public class SaveController {
                     this.loadBittrex = true;
                     break;
                 default:
-                    System.err.println("Bij bittrexProp is niet true of false");
+                    ConsoleColor.err("Bij bittrexProp is niet true of false");
                     break;
             }
 
@@ -131,13 +135,32 @@ public class SaveController {
                     this.loadBitstamp = true;
                     break;
                 default:
-                    System.err.println("Bij bitstamProp is niet true of false");
+                    ConsoleColor.err("Bij bitstamProp is niet true of false");
                     break;
             }
 
             // get the property value and print it out
-            String GDAXProp = prop.getProperty("bitstamp");
+            String cexIoProp = prop.getProperty("cexIo");
 
+            //switch er door heen
+            switch (cexIoProp) {
+                case "false":
+                    this.loadCexIo = false;
+                    break;
+                case "true":
+                    this.loadCexIo = true;
+                    break;
+                default:
+                    ConsoleColor.err("Bij cexIoProp is niet true of false");
+                    break;
+            }
+
+            // get the property value and print it out
+            String GDAXProp = prop.getProperty("gdax");
+            
+            if(GDAXProp == null){
+                ConsoleColor.warn("GDAX prop is leeg");
+            } else {
             //swithc er door heen
             switch (GDAXProp) {
                 case "false":
@@ -147,9 +170,9 @@ public class SaveController {
                     this.loadGDAX = true;
                     break;
                 default:
-                    System.err.println("Bij GDAXProp is niet true of false");
+                    ConsoleColor.err("Bij GDAXProp is niet true of false");
                     break;
-            }
+            }}
 
         } catch (IOException ex) {
             System.err.println(ex);
@@ -181,6 +204,8 @@ public class SaveController {
 
             // load a properties file
             prop.load(input);
+            
+            ConsoleColor.out(prop);
 
             // get the property value and print it out
             String bittrexProp = prop.getProperty("bittrex");
@@ -194,7 +219,7 @@ public class SaveController {
                     this.saveBittrex = true;
                     break;
                 default:
-                    System.err.println("Bij bittrexProp is niet true of false");
+                    ConsoleColor.err("Bij bittrexProp is niet true of false");
                     break;
             }
 
@@ -215,7 +240,23 @@ public class SaveController {
             }
 
             // get the property value and print it out
-            String GDAXProp = prop.getProperty("bitstamp");
+            String cexIoProp = prop.getProperty("cexIo");
+
+            //switch er door heen
+            switch (cexIoProp) {
+                case "false":
+                    this.saveCexIo = false;
+                    break;
+                case "true":
+                    this.saveCexIo = true;
+                    break;
+                default:
+                    ConsoleColor.err("Bij cexIoProp is niet true of false");
+                    break;
+            }
+
+            // get the property value and print it out
+            String GDAXProp = prop.getProperty("GDAX");
 
             //swithc er door heen
             switch (GDAXProp) {
@@ -231,7 +272,7 @@ public class SaveController {
             }
 
         } catch (IOException ex) {
-            System.err.println(ex);
+            ConsoleColor.err(ex);
         } finally {
 
             //close de input
@@ -239,7 +280,7 @@ public class SaveController {
                 try {
                     input.close();
                 } catch (IOException e) {
-                    System.err.println(e);
+                    ConsoleColor.err(e);
                 }
             }
         }
@@ -258,10 +299,24 @@ public class SaveController {
                 //reload alle methoden om de minut
                 bittrex.getMarktData(saveBittrex);
             } catch (Exception ex) {
-                System.err.println(ex);
+                ConsoleColor.err(ex);
             }
         } else {
-            System.out.println("Bittrex getData wordt niet geladen.");
+            ConsoleColor.warn("Bittrex getData wordt niet geladen.");
+        }
+    }
+    
+    /**
+     * Load cexIo
+     */
+    private void loadCexIo(){
+        
+        
+        //kijk of bittrex geladen moet worden
+        if(loadCexIo){
+            cexIo.getMarktData(saveBittrex);
+        } else {
+        ConsoleColor.warn("cexIo wordt niet geladen.");
         }
     }
 
@@ -277,10 +332,10 @@ public class SaveController {
                 //reload alle methoden om de minut
                 bitstamp.getMarktData(saveBitstamp);
             } catch (Exception ex) {
-                System.err.println(ex);
+                ConsoleColor.err(ex);
             }
         } else {
-            System.out.println("Bitstamp getData wordt niet geladen.");
+            ConsoleColor.warn("Bitstamp getData wordt niet geladen.");
         }
 
     }

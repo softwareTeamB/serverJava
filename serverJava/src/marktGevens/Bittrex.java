@@ -7,6 +7,7 @@ package marktGevens;
 
 import JSON.JSONArray;
 import JSON.JSONObject;
+import global.ConsoleColor;
 import http.Http;
 import invullenMarktlijst.BittrexMarktUpdate;
 import mysql.Mysql;
@@ -44,11 +45,12 @@ public class Bittrex extends MainMarktGevens {
         String functionSql = "select getExchangeNummer('" + NAAM_EXCHANGE + "') AS nummer;";
         this.idExchange = mysql.mysqlExchangeNummer(functionSql);
 
-        System.out.println("Bittrex constructor in marktGegevens geladen.");
+        ConsoleColor.out("Bittrex constructor in marktGegevens geladen.");
     }
 
     /**
      * Maak een markt updater
+     * @param saveData of de data opgeslagen moet worden
      */
     @Override
     public void getMarktData(boolean saveData) {
@@ -64,7 +66,7 @@ public class Bittrex extends MainMarktGevens {
 
         //kijk of alles gelukt is
         if (!reponseObject.getBoolean("success")) {
-            System.err.println("Er is een error om de bittrex data te ontvangen."
+            ConsoleColor.err("Er is een error om de bittrex data te ontvangen."
                     + " Dit is de melding:" + reponseObject.getString("message"));
 
             //stop de methoden
@@ -89,7 +91,7 @@ public class Bittrex extends MainMarktGevens {
             try {
                 idMarktNaam = mysql.mysqlExchangeNummer(idMarktNaamSql);
             } catch (Exception ex) {
-                System.err.println(ex);
+                ConsoleColor.err(ex);
 
                 //roep de methoden op markten de updaten
                 try {
@@ -99,7 +101,7 @@ public class Bittrex extends MainMarktGevens {
                 } catch (Exception ex1) {
 
                     //print de error
-                    System.err.println(ex1);
+                    ConsoleColor.err(ex1);
 
                     //sluit de applicatie omdat er geen oplossing meer is
                     System.exit(0);
@@ -116,7 +118,7 @@ public class Bittrex extends MainMarktGevens {
                 } catch (Exception ex1) {
 
                     //print de error
-                    System.err.println(ex1);
+                    ConsoleColor.err(ex1);
 
                     //sluit de applicatie omdat er geen oplossing meer is
                     System.exit(0);
@@ -134,11 +136,11 @@ public class Bittrex extends MainMarktGevens {
 
             //roep de methoden op die de data verwerkt
             try {
-                super.marktDataUpdate(high, low, volume, volumeBTC, bid, ask, last, idMarktNaam, idExchange, saveData);
+                super.marktDataUpdate(high, low, volume, volumeBTC, bid, ask, last, idExchange, idMarktNaam, saveData);
             } catch (Exception ex) {
 
                 //problemen met het database
-                System.err.println(ex);
+                ConsoleColor.err(ex);
             }
         }
     }

@@ -1,6 +1,7 @@
 package global;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -24,6 +25,16 @@ public class FileSystem {
     public String readFileConfig(String naamBestand) throws IOException {
         return new String(Files.readAllBytes(Paths.get("config/" + naamBestand)), StandardCharsets.UTF_8);
     }
+    
+    /**
+     * Read file
+     * @param naamBestand bestand naam en de locatie
+     * @return waarde van het bestand
+     * @throws IOException als er een error is
+     */
+    public String readFile(String naamBestand) throws IOException{
+        return new String(Files.readAllBytes(Paths.get(naamBestand)), StandardCharsets.UTF_8);
+    }
 
     /**
      * Bestand write
@@ -42,6 +53,20 @@ public class FileSystem {
 
         //close the writer
         bw.close();
+    }
+
+    /**
+     * Check of het bestand bestaat
+     * @param filePathString file bestand en de locatie
+     * @return of het bestand bestaat
+     */
+    public boolean fileExits(String filePathString) {
+        File f = new File(filePathString);
+        if (f.exists() && !f.isDirectory()) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
 }

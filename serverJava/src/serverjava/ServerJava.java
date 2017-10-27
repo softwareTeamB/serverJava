@@ -1,22 +1,11 @@
 package serverjava;
 
 import Gemiddelde.gemiddeldeMarktupdatehistory;
-import global.LoadPropFile;
 import invullenMarktlijst.BittrexMarktUpdate;
 import invullenMarktlijst.insertFuncties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import invullenMarktlijst.BitstampMarktUpdate;
+import invullenMarktlijst.Driver;
 import invullenMarktlijst.GDAXMarktUpdate;
-import marktGevens.Bittrex;
-import marktGevens.Poloniex;
-import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-
-import java.util.Date;
-import java.util.Properties;
-import java.util.Timer;
 import java.util.TimerTask;
 import marktGevens.SaveController;
 
@@ -43,19 +32,27 @@ public class ServerJava {
             saveController.loadBoolean();
         }
     };
-    
-
 
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) throws ParseException {
+    public static void main(String[] args) {
 
         //run even de installer
-        gemiddeldeMarktupdatehistory avg = new gemiddeldeMarktupdatehistory();
-        Installer install = new Installer();
-       
+        InstallerV2 iV2 = new InstallerV2();
+        iV2.main();
 
+        gemiddeldeMarktupdatehistory avg = new gemiddeldeMarktupdatehistory();
+
+        //invullenMarktLijst
+        Driver driver = new Driver();
+        driver.driver();
+
+        //roep de saveController op
+        SaveController saveController = new SaveController(60000);
+        saveController.runSaver();
+
+        /*
         //laat config prop file
         LoadPropFile loadPropFile = new LoadPropFile();
         Properties prop;
@@ -70,9 +67,8 @@ public class ServerJava {
             System.err.println(ex);
             System.err.println("Er een systeem error. Het programma wordt afgesloten");
             System.exit(0);
-        }
-        
-       
+        }*/
+         /*
        
        
         avg.control(1, 12304, "bid", "2017-09-09", "2017-10-12");
@@ -82,8 +78,8 @@ public class ServerJava {
 
         //kijk of marktlijsten ingevuld moet worden
         //boolean vulMarktLijsten;
-        String configVulMarktLijsten = prop.getProperty("checkMarktLijst");
-        //String configVulMarktLijsten = "true";
+        //String configVulMarktLijsten = prop.getProperty("checkMarktLijst");
+        String configVulMarktLijsten = "true";
         if ("true".equals(configVulMarktLijsten)) {
             //hier wordt de methoden opgeroepen die het invullen van de marktLijsten regeld
             try {
@@ -104,7 +100,7 @@ public class ServerJava {
 
         //run de saveController in een aparte thread
         Thread thread = new Thread(SAVE_CONTROLLER_TASK);
-        thread.start();
+        thread.start();*/
     }
 
     /**
@@ -120,7 +116,7 @@ public class ServerJava {
         //bittrexMarktdata bit = new bittrexMarktdata();
         //bit.bittrexMarktdataControler();
         //methoden die de update op roep voor poloniex
-        InstersFuncies.invullenCoinsBittrex();
+        //InstersFuncies.invullenCoinsBittrex();
         InstersFuncies.invullenCoinsPolo(markt, url, symbool);
 
         //methoden die de update op roep voor bittrex
