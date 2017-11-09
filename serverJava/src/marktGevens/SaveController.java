@@ -28,6 +28,7 @@ public class SaveController {
     Bittrex bittrex;
     Bitstamp bitstamp;
     CexIo cexIo;
+    Poloniex poloniex;
 
     //properties
     Properties prop;
@@ -45,6 +46,7 @@ public class SaveController {
             loadBittrex();
             loadBitstamp();
             loadCexIo();
+            loadPoloniex();
         }
     };
 
@@ -54,6 +56,9 @@ public class SaveController {
      * @param reloadTime om te hoeveel tijd de methodes reload moeten worden
      */
     public SaveController(int reloadTime) {
+        
+        //maap het object aan
+        poloniex = new Poloniex();
 
         //vul reloadTime
         this.RELOAD_TIME = reloadTime;
@@ -157,25 +162,44 @@ public class SaveController {
 
             // get the property value and print it out
             String GDAXProp = prop.getProperty("gdax");
-            
-            if(GDAXProp == null){
+
+            if (GDAXProp == null) {
                 ConsoleColor.warn("GDAX prop is leeg");
             } else {
-            //swithc er door heen
-            switch (GDAXProp) {
+                //swithc er door heen
+                switch (GDAXProp) {
+                    case "false":
+                        this.loadGDAX = false;
+                        break;
+                    case "true":
+                        this.loadGDAX = true;
+                        break;
+                    default:
+                        ConsoleColor.err("Bij GDAXProp is niet true of false");
+                        break;
+                }
+            }
+
+            // get the property value and print it out
+            String poloniexProp = prop.getProperty("poloniex");
+
+            //switch er door heen
+            switch (poloniexProp) {
                 case "false":
-                    this.loadGDAX = false;
+                    ConsoleColor.warn("poloniex wordt niet geladen.");
+                    this.loadPoloniex = false;
                     break;
                 case "true":
-                    this.loadGDAX = true;
+                    ConsoleColor.warn("poloniex wordt geladen.");
+                    this.loadPoloniex = true;
                     break;
                 default:
-                    ConsoleColor.err("Bij GDAXProp is niet true of false");
+                    ConsoleColor.err("Bij poloniexProp is niet true of false");
                     break;
-            }}
+            }
 
         } catch (IOException ex) {
-            System.err.println(ex);
+           ConsoleColor.err(ex);
         } finally {
 
             //close de input
@@ -204,7 +228,7 @@ public class SaveController {
 
             // load a properties file
             prop.load(input);
-            
+
             ConsoleColor.out(prop);
 
             // get the property value and print it out
@@ -305,18 +329,17 @@ public class SaveController {
             ConsoleColor.warn("Bittrex getData wordt niet geladen.");
         }
     }
-    
+
     /**
      * Load cexIo
      */
-    private void loadCexIo(){
-        
-        
+    private void loadCexIo() {
+
         //kijk of bittrex geladen moet worden
-        if(loadCexIo){
+        if (loadCexIo) {
             cexIo.getMarktData(saveBittrex);
         } else {
-        ConsoleColor.warn("cexIo wordt niet geladen.");
+            ConsoleColor.warn("cexIo wordt niet geladen.");
         }
     }
 
@@ -337,7 +360,25 @@ public class SaveController {
         } else {
             ConsoleColor.warn("Bitstamp getData wordt niet geladen.");
         }
-
+    }
+    
+    /**
+     * Methoden om poloniex te laden
+     */
+    private void loadPoloniex(){
+    
+        //kijk of bitstamp geladen moet worden
+        if (loadPoloniex) {
+            ConsoleColor.warn(savePoloniex);
+              try {
+                //reload alle methoden om de minut
+                poloniex.getMarktData(savePoloniex);
+            } catch (Exception ex) {
+                ConsoleColor.err(ex);
+            }
+        } else {
+            ConsoleColor.warn("Poloniex getData wordt niet geladen.");
+        }
     }
 
 }
