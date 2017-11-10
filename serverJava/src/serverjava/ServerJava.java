@@ -159,7 +159,7 @@ public class ServerJava {
             if (count == 0) {
 
                 //voeg de exchange toe en de verbindings teken
-                String sqlInsert = "INESRT INFOT handelsplaats (handelsplaatsNaam, verbindingsTeken) "
+                String sqlInsert = "INSERT INTO handelsplaats (handelsplaatsNaam, verbindingsTeken) "
                         + "VALUES('" + exchangeNaam + "', '" + verbindingsTeken[i] + "')";
 
                 //voer het stament uit

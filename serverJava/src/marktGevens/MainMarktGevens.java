@@ -18,6 +18,9 @@ public abstract class MainMarktGevens {
 
     Mysql mysql = new Mysql();
 
+    //coinLijstObject
+    private JSONObject coinLijstObject = new JSONObject();
+
     //abstracten methodens
     public abstract void getMarktData(boolean saveData);
 
@@ -180,6 +183,95 @@ public abstract class MainMarktGevens {
 
         String getNummer = "SELECT getExchangeNummer('" + exchangeNaam + "') AS nummer;";
         return mysql.mysqlNummer(getNummer);
+    }
+
+    /**
+     * krijg het idMarktPositie
+     * @param marktNaam marktnaam van de markt naam op de exchange
+     * @param idExchange het exchange nummer
+     * @return idMarktPositie
+     * @throws SQLException sqlException error
+     * @throws Exception algemene error
+     */
+    public int getDBMarktNummer(String marktNaam, int idExchange) throws SQLException, Exception {
+
+        //kijk of de cointag al in de memoryLijst staat
+        if (coinLijstObject.has(marktNaam)) {
+
+            //vraag het nummer op
+            int idMarktPositie = coinLijstObject.getInt(marktNaam);
+
+            //return idMarktNaam
+            return idMarktPositie;
+
+        } else {
+            
+            //kijk of de markt in de marktlijsten staat
+            String countSql = "SELECT COUNT(*) AS total FROM marktlijsten "
+                    + "WHERE naamMarkt='" + marktNaam + "' AND idHandelsplaats='" + idExchange + "'";
+
+            //kijk of het nummer er in staat
+            int count = mysql.mysqlCount(countSql);
+
+            //als het nummer er niet in staat wordt het if stament geladen
+            if (count == 0) {
+
+                //krijg het verbindings teken
+                String verbindingsTekenSql = "SELECT verbindingsTeken FROM handelsplaats "
+                        + "WHERE idHandelsplaats='" + idExchange + "'";
+
+                ResultSet rs = mysql.mysqlSelect(verbindingsTekenSql);
+                String verbindingsTeken = null;
+                while (rs.next()) {
+
+                    verbindingsTeken = rs.getString("verbindingsTeken");
+                }
+
+                //split de marktNaamDB. Bij split is wordt het verbindings teken gebruikt
+                String[] parts = marktNaam.split(verbindingsTeken);
+                String baseCoin = parts[0];
+                String marktCoin = parts[1];
+
+                //maakt de marktNaamDB
+                String marktNaamDB = baseCoin + "-" + marktCoin;
+
+                //kijk of het countsql2 stament basecoin en marktCurrency al in de marktnaam staat
+                String countSql2 = "SELECT COUNT(*) AS total FROM marktnaam "
+                        + "WHERE marktnaamDb='"+marktNaamDB+"' AND basecoin='" + baseCoin + "' "
+                        + "AND marktCurrency='" + marktCoin + "'";
+                int count2 = mysql.mysqlCount(countSql2);
+
+                //stament bij 0 voeg de baseCoin, marktCoin en marktnaamDB toe
+                if (count2 == 0) {
+
+                    //insert stament
+                    String insertStament = "INSERT INTO marktnaam (marktnaamDb, basecoin, marktCurrency) "
+                            + "VALUES ('" + marktNaamDB + "', '" + baseCoin + "', '" + marktCoin + "')";
+                    //run stament
+                    mysql.mysqlExecute(insertStament);
+                }
+
+                //vraag idMarktNaam markt op
+                String idMarktNaamSql = "SELECT idMarktNaam AS nummer FROM marktnaam WHERE marktnaamDb='"+marktNaamDB+"'";
+                int idMarktNaam = mysql.mysqlNummer(idMarktNaamSql);
+                
+                //voeg het toe in marktLijsten toe
+                String inserInto2 = "INSERT INTO marktlijsten (naamMarkt, idMarktNaam, idHandelsplaats) "
+                        + "VALUES ('"+marktNaam+"', '"+idMarktNaam+"', '"+idExchange+"')";
+                mysql.mysqlExecute(inserInto2);   
+            }
+            
+            //krijg de idMarktPosistie
+            String idMarktPositieSql = "SELECT idMarktPositie AS nummer FROM marktlijsten "
+                    + "WHERE naamMarkt='"+marktNaam+"' AND idHandelsplaats='" + idExchange + "' ";
+            int idMarktPositie = mysql.mysqlNummer(idMarktPositieSql);
+            
+            //JSONObject
+            coinLijstObject.put(marktNaam, idMarktPositie);
+            
+            //return idMarktNaam
+            return idMarktPositie;
+        }
     }
 
     /**

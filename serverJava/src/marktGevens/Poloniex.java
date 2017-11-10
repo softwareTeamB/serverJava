@@ -1,100 +1,94 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package marktGevens;
 
-import JSON.JSONArray;
 import JSON.JSONObject;
+import global.ConsoleColor;
 import http.Http;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import mysql.Mysql;
 
 /**
+ * Maak de marktGevens op de balance op de vragen
  *
- * @author Jaros
+ * @author michel
  */
 public class Poloniex extends MainMarktGevens {
 
     Mysql mysql = new Mysql();
     Http http = new Http();
 
-    //naam exchange
-    private final String NAAM_EXCHANGE;
-    private final int idExchange;
     private final String BASIS_URL = "https://poloniex.com/public?command=returnTicker";
+    private int idExchange;
 
-    //jsonarray
-    JSONArray arrayMarkt;
-    JSONObject markKey;
-
-    public Poloniex(String exchangeNaam, boolean saveData) throws Exception {
-
-        //maak een JSONArray aan
-        this.arrayMarkt = new JSONArray();
-
-        //maak key lijst
-        this.markKey = new JSONObject();
-
-        //naam exchange
-        this.NAAM_EXCHANGE = exchangeNaam;
-
-        //id exchange
-        String functionSql = "select getExchangeNummer('" + NAAM_EXCHANGE + "') AS nummer;";
-        this.idExchange = mysql.mysqlExchangeNummer(functionSql);
-
-
-        //roep de methoden op die fixKeysMarktlijst
-        JSONObject responsUpdate = super.fixKeysMarktLijst(exchangeNaam);
-        this.arrayMarkt = responsUpdate.getJSONArray("array");
-        this.markKey = responsUpdate.getJSONObject("object");
-
-        //print de markt key uit
-        System.out.println(markKey);
+    public Poloniex() {
+    
+        try {
+            this.idExchange = super.getExchangeNummer("poloniex");
+            ConsoleColor.out("Poloniex idNummer is: "+idExchange);
+        } catch (Exception ex) {
+            ConsoleColor.err("Error bij poloniex marktgevens in de constructor. Dit is de error: "+ex+". Het systeem wordt afgesloten");
+            System.exit(0);
+        }
     }
-
+    
     @Override
     public void getMarktData(boolean saveData) {
-        System.out.println(arrayMarkt);
 
-        //loop door de array heen
-        for (int i = 0; i < arrayMarkt.length(); i++) {
+        //get String
+        String responseString;
+        try {
+            responseString = http.getHttpObject(BASIS_URL);
+        } catch (IOException ex) {
+            ConsoleColor.err(ex);
+            return;
+        }
 
-            //krijg de marktnaam uit de array
-            String marktNaam = arrayMarkt.getString(i);
+        //maak er een jsonObject van
+        JSONObject response = new JSONObject(responseString);
 
-            //get String
-            String responseString = http.getHTTP(BASIS_URL + "/ticker/" + marktNaam);
+        for (int i = 0; i < response.names().length(); i++) {
 
-            //maak er een object van
-            JSONObject response = new JSONObject(responseString);
+            //vraag keyNaam op
+            String keyNaam = response.names().getString(i);
 
-            //vul de variable met het object
-            double high = 0;//response.getDouble("");//invullen!!!!!!!!
-            double last = response.getDouble("last");
-            double bid = response.getDouble("highestBid");
-            double low = response.getDouble("low");
-            double ask = response.getDouble("lowestAsk");
+            //pak het eerste object
+            JSONObject object2 = response.getJSONObject(keyNaam);
+
+            String[] parts = keyNaam.split("_");
+            String part1 = parts[0];
+            
+            //vraag de gegevens op
+            double high = object2.getDouble("high24hr");
+            double last = object2.getDouble("last");
+            double bid = object2.getDouble("highestBid");
+            double low = object2.getDouble("low24hr");
+            double ask = object2.getDouble("lowestAsk");
 
             //vaak volume en volumeBTC double aan
             double volume;
             double volumeBTC;
 
-            if ("btcusd".equals(marktNaam)) {
+            if ("USDT".equals(part1)) {
                 //dit moet zo gebeuren omdat we van btc naar dollar om zetten en dat is dan het volume
-                volume = response.getDouble("volume") * bid;
-                volumeBTC = response.getDouble("volume");
+                volume = object2.getDouble("baseVolume") * bid;
+                volumeBTC = object2.getDouble("baseVolume");
             } else {
-                volume = response.getDouble("volume");
-                volumeBTC = response.getDouble("volume") * bid;
-
+                volume = object2.getDouble("baseVolume");
+                volumeBTC = object2.getDouble("baseVolume") * bid;
             }
-
+            
             //als er een error op treed bij het toevoegen of updaten van de data
             try {
-                super.marktDataUpdate(high, low, volume, volumeBTC, bid, ask, last, idExchange, markKey.getInt(marktNaam), saveData);
+                
+                //vraag de marktnaam nummer op
+                int idMarktPositie = super.getDBMarktNummer(keyNaam, idExchange);
+                
+                //roep de methoden op die het opslaan systeem doet
+                super.marktDataUpdate(high, low, volume, volumeBTC, bid, ask, last, idExchange,
+                        idMarktPositie, saveData);
             } catch (Exception ex) {
-                System.err.println("Error bij bitstamp in de package marktGegevens. " + ex);
+                ConsoleColor.err("Error bij poloniex in de package marktGegevens. " + ex);
             }
         }
     }
