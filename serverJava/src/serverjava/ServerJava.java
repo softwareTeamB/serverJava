@@ -1,6 +1,8 @@
 package serverjava;
 
 import Gemiddelde.gemiddeldeMarktupdatehistory;
+import Web.Index;
+import Web.WebSocket;
 import com.sun.net.httpserver.HttpServer;
 import global.ConsoleColor;
 import invullenMarktlijst.BittrexMarktUpdate;
@@ -9,6 +11,7 @@ import invullenMarktlijst.BitstampMarktUpdate;
 import invullenMarktlijst.Driver;
 import invullenMarktlijst.GDAXMarktUpdate;
 import java.io.Console;
+import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.sql.SQLException;
 import java.util.TimerTask;
@@ -28,6 +31,9 @@ public class ServerJava {
     private static SaveController saveController;
     private static int reloadTime;
 
+    //static methodens
+    public static Web.WebSocket webSocket;
+
     //task controller voor saveController
     private static final TimerTask SAVE_CONTROLLER_TASK = new TimerTask() {
 
@@ -45,16 +51,38 @@ public class ServerJava {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        
+
         //run even de installer
         InstallerV2 iV2 = new InstallerV2();
         iV2.main();
-        
+
         //run de mydql check
         mysqlExchangeCheck();
-        
-        gemiddeldeMarktupdatehistory avg = new gemiddeldeMarktupdatehistory();
 
+        //maak de classe aan die de websocket regeld
+        try {
+            //roep de webSocket aan
+            webSocket = new WebSocket();
+        } catch (IOException | SQLException ex) {
+            ConsoleColor.err(ex);
+
+            //fatale error sluit het systeem af
+            System.exit(0);
+        }
+
+        //get Routers worden hier geladen
+        Index webIndexRouter = new Index();
+        try {
+            webIndexRouter.index();
+        } catch (IOException ex) {
+            ConsoleColor.err(ex);
+
+            //fatale error sluit het systeem af
+            System.exit(0);
+        }
+
+        //fatale error sluit het systeem af
+        //gemiddeldeMarktupdatehistory avg = new gemiddeldeMarktupdatehistory();
         //invullenMarktLijst
         //Driver driver = new Driver();
         //driver.driver();
@@ -70,7 +98,7 @@ public class ServerJava {
 
         /*
             //laat config prop file
-            LoadPropFile loadPropFile = new LoadPropFile();
+P            LoadPropFile loadPropFile = new LoadPropFile();
             Properties prop;
             try {
             prop = loadPropFile.loadPropFile("./config/config.properties");
@@ -196,7 +224,7 @@ public class ServerJava {
 
                     //update sql stament voor verbindigsTeken
                     String updateSql = "UPDATE handelsplaats SET verbindingsTeken='" + verbindingsTeken[i] + "'";
-                    
+
                     //voer het stament uit
                     try {
                         mysql.mysqlExecute(updateSql);
@@ -210,7 +238,7 @@ public class ServerJava {
                 }
 
             }
-            
+
             ConsoleColor.out("MysqlExchangeCheck is doorlopen.");
         }
     }

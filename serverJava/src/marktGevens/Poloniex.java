@@ -4,8 +4,6 @@ import JSON.JSONObject;
 import global.ConsoleColor;
 import http.Http;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import mysql.Mysql;
 
 /**
@@ -38,15 +36,17 @@ public class Poloniex extends MainMarktGevens {
         //get String
         String responseString;
         try {
-            responseString = http.getHttpObject(BASIS_URL);
+            responseString = http.getHttpBrowser(BASIS_URL);
         } catch (IOException ex) {
-            ConsoleColor.err(ex);
+            ConsoleColor.err("lol"+ex);
             return;
         }
-
+        
         //maak er een jsonObject van
         JSONObject response = new JSONObject(responseString);
-
+        
+        
+        //loop door het object heen
         for (int i = 0; i < response.names().length(); i++) {
 
             //vraag keyNaam op
@@ -83,6 +83,10 @@ public class Poloniex extends MainMarktGevens {
                 
                 //vraag de marktnaam nummer op
                 int idMarktPositie = super.getDBMarktNummer(keyNaam, idExchange);
+                
+                
+                //stuur het jsonobject naar de webSoacket
+                super.setMarktDataUpdate(keyNaam, idMarktPositie);
                 
                 //roep de methoden op die het opslaan systeem doet
                 super.marktDataUpdate(high, low, volume, volumeBTC, bid, ask, last, idExchange,

@@ -322,5 +322,23 @@ public abstract class MainMarktGevens {
         //reponse object
         return responseObject;
     }
-
+    
+        /**
+     * Update marktData via de setMethoden
+     *
+     * @param marktDataUpdate string die de marktData aan moet leveren
+     * @param exchangeID exchangeID geld als key
+     */
+    public void setMarktDataUpdate(String marktDataUpdate, int exchangeID) {
+        
+        //maak van een int een string
+        String exchangeIDString = exchangeID+"";
+       
+        //jsonobject remove key
+        serverjava.ServerJava.webSocket.marktDataUpdate.remove(exchangeIDString);
+        
+        
+        //voeg het nieuwe object toe
+        serverjava.ServerJava.webSocket.marktDataUpdate.put(exchangeIDString, marktDataUpdate);
+    }
 }
