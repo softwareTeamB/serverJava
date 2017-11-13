@@ -14,8 +14,10 @@ import marktGevens.Poloniex;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+
 import java.util.Date;
 import java.util.Properties;
+import java.util.Timer;
 import java.util.TimerTask;
 import marktGevens.SaveController;
 
@@ -42,6 +44,8 @@ public class ServerJava {
             saveController.loadBoolean();
         }
     };
+    
+
 
     /**
      * @param args the command line arguments
@@ -51,6 +55,7 @@ public class ServerJava {
         //run even de installer
         gemiddeldeMarktupdatehistory avg = new gemiddeldeMarktupdatehistory();
         Installer install = new Installer();
+       
 
         //laat config prop file
         LoadPropFile loadPropFile = new LoadPropFile();

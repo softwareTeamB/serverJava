@@ -67,7 +67,7 @@ public class SaveController {
         } catch (Exception ex) {
             
             //laat de error zijn
-            Logger.getLogger(SaveController.class.getName()).log(Level.SEVERE, null, ex);
+            ConsoleColor.err(ex+"");
             
             ConsoleColor.err("Er is een error in de constructor van de saveController. De error is "+ ex
                     + " . \n Het systeem wordt veilig afgesloten.");
@@ -160,7 +160,7 @@ public class SaveController {
                 try {
                     input.close();
                 } catch (IOException e) {
-                    System.err.println(e);
+                    ConsoleColor.err(e);
                 }
             }
         }
