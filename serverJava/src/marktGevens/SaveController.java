@@ -2,7 +2,6 @@ package marktGevens;
 
 import global.ConsoleColor;
 import global.LoadPropFile;
-import java.io.Console;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,8 +9,6 @@ import java.util.Date;
 import java.util.Properties;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -56,7 +53,7 @@ public class SaveController {
      * @param reloadTime om te hoeveel tijd de methodes reload moeten worden
      */
     public SaveController(int reloadTime) {
-        
+
         //maap het object aan
         poloniex = new Poloniex();
 
@@ -68,6 +65,7 @@ public class SaveController {
             this.bittrex = new Bittrex("bittrex");
             // this.bitstamp = new Bitstamp("bitstamp");
             this.cexIo = new CexIo();
+            this.poloniex = new Poloniex();
 
             //maak de config properties klasse aan en reload het bestand
             LoadPropFile loadPropFile = new LoadPropFile();
@@ -199,7 +197,7 @@ public class SaveController {
             }
 
         } catch (IOException ex) {
-           ConsoleColor.err(ex);
+            ConsoleColor.err(ex);
         } finally {
 
             //close de input
@@ -295,6 +293,22 @@ public class SaveController {
                     break;
             }
 
+            // get the property value and print it out
+            String poloniexProp = prop.getProperty("poloniex");
+
+            //swithc er door heen
+            switch (poloniexProp) {
+                case "false":
+                    this.savePoloniex = false;
+                    break;
+                case "true":
+                    this.savePoloniex = true;
+                    break;
+                default:
+                    System.err.println("Bij poloniexProp is niet true of false");
+                    break;
+            }
+
         } catch (IOException ex) {
             ConsoleColor.err(ex);
         } finally {
@@ -361,16 +375,16 @@ public class SaveController {
             ConsoleColor.warn("Bitstamp getData wordt niet geladen.");
         }
     }
-    
+
     /**
      * Methoden om poloniex te laden
      */
-    private void loadPoloniex(){
-    
+    private void loadPoloniex() {
+
         //kijk of bitstamp geladen moet worden
         if (loadPoloniex) {
             ConsoleColor.warn(savePoloniex);
-              try {
+            try {
                 //reload alle methoden om de minut
                 poloniex.getMarktData(savePoloniex);
             } catch (Exception ex) {

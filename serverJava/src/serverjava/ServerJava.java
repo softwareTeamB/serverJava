@@ -23,7 +23,7 @@ import mysql.Mysql;
 /**
  * Main starter
  *
- * @author Jaros
+ * @author michel
  */
 public class ServerJava {
 
@@ -87,8 +87,8 @@ public class ServerJava {
         //Driver driver = new Driver();
         //driver.driver();
         //roep de saveController op
-        SaveController saveController = new SaveController(60000);
-        saveController.runSaver();
+        SaveController sC = new SaveController(60000);
+        sC.runSaver();
 
         try {
             //invullenMarktLijst();

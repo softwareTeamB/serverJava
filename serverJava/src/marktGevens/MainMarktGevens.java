@@ -89,10 +89,13 @@ public abstract class MainMarktGevens {
             //updater
             mysql.mysqlExecute(sqlUpdate);
         }
-
+        
+        //kijk of de histry of geslagen moet worden
         if (history) {
-            String sqlString = "INSERT INTO marktupdatehistory(high, low, volume, volumeBTC, bid, ask, last, idMarktNaam, idHandelsplaats, idtimestamp) values "
-                    + "('" + high + "', '" + low + "', '" + volume + "', '" + volumeBTC + "', '" + bid + "', '" + ask + "', '" + last + "', '" + idMarktnaam + "', '" + +idHandelsplaats + "', '"
+            String sqlString = "INSERT INTO marktupdatehistory(high, low, volume, volumeBTC, bid, ask, last, "
+                    + "idMarktNaam, idHandelsplaats, idtimestamp) values ('" + high + "', '" + low + "', '" + volume + 
+                    "', '" + volumeBTC + "', '" + bid + "', '" + ask + "', '" + last + "', '" + idMarktnaam + "', '" 
+                    +idHandelsplaats + "', '"
                     + timestampString() + "')";
 
             mysql.mysqlExecute(sqlString);

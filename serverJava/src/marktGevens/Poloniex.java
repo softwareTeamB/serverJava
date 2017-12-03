@@ -38,7 +38,7 @@ public class Poloniex extends MainMarktGevens {
         try {
             responseString = http.getHttpBrowser(BASIS_URL);
         } catch (IOException ex) {
-            ConsoleColor.err("lol"+ex);
+            ConsoleColor.err(ex);
             return;
         }
         
