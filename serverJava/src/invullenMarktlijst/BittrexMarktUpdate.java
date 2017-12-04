@@ -2,6 +2,7 @@ package invullenMarktlijst;
 
 import JSON.JSONArray;
 import JSON.JSONObject;
+import global.ConsoleColor;
 import http.Http;
 import java.sql.SQLException;
 
@@ -74,20 +75,30 @@ public class BittrexMarktUpdate extends MainMarktUpdate {
 
             //count of de markt bestaat
             if (count == 0) {
+                
+                //marktnaam check
+                String countSql = "SELECT COUNT(*) AS total FROM marktnaam WHERE marktnaamDb='"+marktNaamDB+"'";
+                int count2 = mysql.mysqlCount(countSql);
+                
+                int marktDBNummer;
+                
+                if(count2 == 0){
+                    
+                    //voeg marktDBNummer toe en geef het nummer terug
+                    marktDBNummer = super.marktNaam(marktNaamDB, objectCount.getString("BaseCurrency"), objectCount.getString("MarketCurrency"));
+                } else {
+                    
+                    //vraag het nummer op
+                    String getIdMarktNaamDB = "SELECT idMarktNaam as nummer FROM serverproject.marktnaam WHERE marktnaamDb='"+marktNaamDB+"'";
+                    
+                    marktDBNummer = mysql.mysqlNummer(getIdMarktNaamDB);
+                }
 
-                //kijk om de markt in marktNaam staat zoniet word het toegevoegd
-                super.marktNaam(marktNaamDB, objectCount.getString("BaseCurrency"), objectCount.getString("MarketCurrency"));
-
-                //voeg de markt toe in de marktLijsten
-                //code moet verbeterd worden
-                //super.marktLijsten(BITTREX_NUMMER, marktNaamDB, marktNaamDB, objectCount.getInt("MinTradeSize"));
-
+                //voeg de markt toe
+                super.insertMarktLijsten(BITTREX_NUMMER, marktDBNummer, marktNaamDB);
+                
             } else {
-                System.out.println("MarktNaamDB: " + marktNaamDB + "staat al in de marktLijsten database.");
-
-                //voeg de markt toe in de marktLijsten
-                //code moet verbeterd worden
-                //super.marktLijsten(BITTREX_NUMMER, marktNaamDB, marktNaamDB, objectCount.getInt("MinTradeSize"));
+                ConsoleColor.out("MarktNaamDB: " + marktNaamDB + "staat al in de marktLijsten database.");
             }
         }
     }

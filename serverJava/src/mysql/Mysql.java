@@ -8,6 +8,7 @@ package mysql;
 /*
  * Class om alle mysql staments te runnen
  */
+import global.ConsoleColor;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -25,7 +26,7 @@ public class Mysql {
 
     //variable
     private final String USERNAME = "root";
-    private final String PASSWORD = "Lolman513";
+    private final String PASSWORD = "Pulsar11";
     private final String IPADDRESS = "localhost";
     private final String POORT = "3306";
     private final String DATABASENAAM = "serverproject";
@@ -57,6 +58,8 @@ public class Mysql {
      */
     public ResultSet mysqlSelect(String sqlString) throws SQLException {
         
+        ConsoleColor.out(sqlString);
+        
         //return
         return stmt.executeQuery(sqlString);
     }
@@ -69,6 +72,7 @@ public class Mysql {
      */
     public void mysqlExecute(String sqlString) throws SQLException {
 
+        ConsoleColor.out(sqlString);
         
         //run stament
         stmt.execute(sqlString);
@@ -78,6 +82,7 @@ public class Mysql {
 
     public int mysqlCount(String sqlString) throws SQLException, Exception {
 
+        ConsoleColor.out(sqlString);
         
         //return
         ResultSet rs = stmt.executeQuery(sqlString);
@@ -99,7 +104,8 @@ public class Mysql {
      */
     public int mysqlExchangeNummer(String sqlString) throws SQLException, Exception {
 
-      
+      ConsoleColor.out(sqlString);
+        
         //return
         ResultSet rs = stmt.executeQuery(sqlString);
         while (rs.next()) {
@@ -119,6 +125,8 @@ public class Mysql {
      * @throws Exception andere exceptions
      */
     public int mysqlNummer(String sqlString) throws SQLException, Exception {
+        
+        ConsoleColor.out(sqlString);
 
         //return
         ResultSet rs = stmt.executeQuery(sqlString);
@@ -146,5 +154,6 @@ public class Mysql {
         }
         throw new SQLDataException("De database reponse is leeg");
     }
-
+    
+    
 }
