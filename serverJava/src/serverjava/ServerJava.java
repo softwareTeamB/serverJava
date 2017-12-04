@@ -1,22 +1,13 @@
 package serverjava;
 
-import Gemiddelde.gemiddeldeMarktupdatehistory;
 import Web.Index;
 import Web.WebSocket;
-import com.sun.net.httpserver.HttpServer;
 import global.ConsoleColor;
 import invullenMarktlijst.BittrexMarktUpdate;
 import invullenMarktlijst.insertFuncties;
-import invullenMarktlijst.BitstampMarktUpdate;
-import invullenMarktlijst.Driver;
-import invullenMarktlijst.GDAXMarktUpdate;
-import java.io.Console;
 import java.io.IOException;
-import java.net.InetSocketAddress;
 import java.sql.SQLException;
 import java.util.TimerTask;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import marktGevens.SaveController;
 import mysql.Mysql;
 
