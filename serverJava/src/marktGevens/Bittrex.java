@@ -8,8 +8,11 @@ package marktGevens;
 import JSON.JSONArray;
 import JSON.JSONObject;
 import global.ConsoleColor;
+import global.PusherServer;
 import http.Http;
 import invullenMarktlijst.BittrexMarktUpdate;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import mysql.Mysql;
 
 /**
@@ -17,9 +20,10 @@ import mysql.Mysql;
  * @author michel
  */
 public class Bittrex extends MainMarktGevens {
-
-    Mysql mysql = new Mysql();
-    Http http = new Http();
+    
+    private Mysql mysql = new Mysql();
+    private Http http = new Http();
+    private PusherServer pushServer = new PusherServer();
 
     //naam exchange
     private final String NAAM_EXCHANGE;
@@ -44,12 +48,13 @@ public class Bittrex extends MainMarktGevens {
         //id exchange
         String functionSql = "select getExchangeNummer('" + NAAM_EXCHANGE + "') AS nummer;";
         this.idExchange = mysql.mysqlExchangeNummer(functionSql);
-
+        
         ConsoleColor.out("Bittrex constructor in marktGegevens geladen.");
     }
 
     /**
      * Maak een markt updater
+     *
      * @param saveData of de data opgeslagen moet worden
      */
     @Override
@@ -59,7 +64,18 @@ public class Bittrex extends MainMarktGevens {
         String httpUrl = BASIS_URL + "/public/getmarketsummaries";
 
         //vraag de data op aan de servers
-        String stringHttpReponse = http.getHTTP(httpUrl);
+        String stringHttpReponse;
+        try {
+            stringHttpReponse = http.getHTTP(httpUrl);
+            //zet de bittrex response in pusher
+        } catch (Exception ex) {
+            
+            //console error bericht
+            ConsoleColor.err("Er is een probleem op de data op te vragen van de server van: " + httpUrl +"\n error bericht is: "+ ex);
+            
+            //return stament
+            return;
+        }
 
         //JSONObject
         JSONObject reponseObject = new JSONObject(stringHttpReponse);
@@ -81,10 +97,10 @@ public class Bittrex extends MainMarktGevens {
 
             //vul het jsonobject met het eerst volgende object
             JSONObject object = array.getJSONObject(i);
-
+            
             String idMarktNaamSql = "SELECT idMarktNaam AS nummer FROM marktnaam "
                     + "WHERE marktnaamDb = '" + object.getString("MarketName") + "'";
-
+            
             int idMarktNaam = -1;
 
             //vraag de idMarktNaam op
@@ -106,7 +122,7 @@ public class Bittrex extends MainMarktGevens {
                     //sluit de applicatie omdat er geen oplossing meer is
                     System.exit(0);
                 }
-
+                
             }
 
             //als het idMarktNaam -1 blijft roep dan de try catch op

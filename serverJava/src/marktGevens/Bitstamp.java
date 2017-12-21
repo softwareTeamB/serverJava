@@ -2,9 +2,12 @@ package marktGevens;
 
 import JSON.JSONArray;
 import JSON.JSONObject;
+import global.ConsoleColor;
 import http.Http;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import mysql.Mysql;
 
 /**
@@ -70,8 +73,21 @@ public class Bitstamp extends MainMarktGevens {
             //krijg de marktnaam uit de array
             String marktNaam = arrayMarkt.getString(i);
 
+            //maak een url string aan
+            String url = BASIS_URL + "/ticker/" + marktNaam;
+            
             //get String
-            String responseString = http.getHTTP(BASIS_URL + "/ticker/" + marktNaam);
+            String responseString;
+            try {
+                responseString = http.getHTTP(url);
+            } catch (Exception ex) {
+
+                //console error bericht
+                ConsoleColor.err("Er is een probleem op de data op te vragen van de server van: " + url + "\n error bericht is: " + ex);
+
+                //return stament
+                return;
+            }
 
             //maak er een object van
             JSONObject response = new JSONObject(responseString);

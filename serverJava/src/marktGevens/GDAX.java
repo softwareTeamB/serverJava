@@ -2,7 +2,10 @@ package marktGevens;
 
 import JSON.JSONArray;
 import JSON.JSONObject;
+import global.ConsoleColor;
 import http.Http;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import mysql.Mysql;
 
 /**
@@ -51,8 +54,21 @@ public class GDAX extends MainMarktGevens {
             //krijg de marktnaam uit de array
             String marktNaam = arrayMarkt.getString(i);
 
+            //String url 
+            String url = BASIS_URL + "/products/" + marktNaam + "/ticker";
+
             //get String
-            String responseString = http.getHTTP(BASIS_URL + "/products/" + marktNaam + "/ticker");
+            String responseString;
+            try {
+                responseString = http.getHTTP(url);
+            } catch (Exception ex) {
+
+                //console error bericht
+                ConsoleColor.err("Er is een probleem op de data op te vragen van de server van: " + url + "\n error bericht is: " + ex);
+
+                //return stament
+                return;
+            }
             System.out.println(responseString);
 
             //maak er een object van
@@ -62,11 +78,10 @@ public class GDAX extends MainMarktGevens {
             double last = response.getDouble("price");
             double bid = response.getDouble("bid");
             double ask = response.getDouble("ask");
-            
 
             double low;
             double high;
-            
+
             //vaak volume en volumeBTC double aan
             double volume;
             double volumeBTC;
@@ -79,7 +94,7 @@ public class GDAX extends MainMarktGevens {
             }
 
         }
-        
+
         /*  "price": "333.99",
   "size": "0.193",
   "bid": "333.98",

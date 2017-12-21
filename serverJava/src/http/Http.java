@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package http;
 
 import java.io.BufferedReader;
@@ -21,19 +16,27 @@ import java.util.Scanner;
  */
 public class Http {
 
-    public String getHTTP(String uri) {
-        try {
-            URL url = new URL(uri);
-            BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream()));
-            String strTemp = "";
-            while (null != (strTemp = br.readLine())) {
-                return strTemp;
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return "false";
+    /**
+     * Methoden voor een http get
+     * @param uri
+     * @return
+     * @throws MalformedURLException
+     * @throws IOException 
+     */
+    public String getHTTP(String uri) throws MalformedURLException, IOException, Exception {
+
+        //kijk of er internet verbinding is
+        global.InternetConnection.internetConnectionTest(uri);
+        
+        //maak de url aan
+        URL url = new URL(uri);
+        BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream()));
+        String strTemp = "";
+        while (null != (strTemp = br.readLine())) {
+            return strTemp;
         }
-        return "false";
+        
+        throw new Exception("Er is een probleem om alle opgevraagde data te verwerken van de url: "+ uri);
     }
 
     /**
@@ -56,6 +59,13 @@ public class Http {
 
     }
 
+    /**
+     * Methoden voor een http request als een browser
+     * @param url2 url
+     * @return return stament zit alle data in
+     * @throws MalformedURLException error exceptie
+     * @throws IOException io error
+     */
     public String getHttpBrowser(String url2) throws MalformedURLException, IOException {
 
         //maak er een url van
@@ -64,7 +74,7 @@ public class Http {
         HttpURLConnection connection = ((HttpURLConnection) url.openConnection());
         connection.addRequestProperty("User-Agent", "Mozilla/4.0");
         InputStream input;
-        if (connection.getResponseCode() == 200)  {
+        if (connection.getResponseCode() == 200) {
             input = connection.getInputStream();
         } else {
             input = connection.getErrorStream();
